@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//Temporary
+model User {
+  id       String @id @default(uuid())
+  kid      String
+  name     String
+  email    String @unique
+  phone    String
+  college  String
+  Sherlock Team[] @relation("Sherlock")
+  Watson   Team[] @relation("Watson")
+}
+
+model Team {
+  id       String @id @default(uuid())
+  name     String @unique
+  password String
+  sherlock String
+  Sherlock User   @relation("Sherlock", fields: [sherlock], references: [id])
+  watson   String
+  Watson   User   @relation("Watson", fields: [watson], references: [id])
+  //Score - Sherlock, Watson and Team
+  //Time - Sherlock and Watson in Round 1, Round 2
+  //No. of clues used by Sherlock and Watson
+  //Last clue - Sherlock and Watson in Round 1, Round 2
+}
