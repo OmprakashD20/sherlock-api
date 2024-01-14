@@ -1,17 +1,17 @@
 const express = require("express");
 
-const { handleSuccess } = require("../../utils/helper.util");
+//controllers
 
-//Controllers
+//middlewares
 
-//Middlewares
-
-//Validators
+//validators
 
 const watsonRouter = express.Router();
 
 watsonRouter.get("/", (req, res) =>
-  handleSuccess(res, "Welcome to the Watson Route")
+  res.status(200).json({
+    message: "You hit the Watson API route",
+  })
 );
 
 /* ROUND 1 WATSON ROUTES */

@@ -1,17 +1,18 @@
 const express = require("express");
 
-const { handleSuccess } = require("../../utils/helper.util");
+//controllers
 
-//Controllers
+//middlewares
+const verifyUser = require("../../middleware/auth.middleware");
 
-//Middlewares
-
-//Validators
+//validators
 
 const sherlockRouter = express.Router();
 
-sherlockRouter.get("/", (req, res) =>
-  handleSuccess(res, "Welcome to the Sherlock Route")
+sherlockRouter.get("/", verifyUser, (req, res) =>
+  res.status(200).json({
+    message: "You hit the Sherlock Route",
+  })
 );
 
 /* ROUND 1 SHERLOCK ROUTES */
