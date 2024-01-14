@@ -1,15 +1,19 @@
-const handleError = (res, err, statusCode = 500) => {
-  console.error(err);
-  res.status(statusCode).json({ error: err });
+const bcrpyt = require("bcryptjs");
+
+//hash password
+const hash = async (password) => {
+  let salt = await bcrpyt.genSalt(10);
+  let hashedPassword = await bcrpyt.hash(password, salt);
+  return hashedPassword;
 };
 
-const handleSuccess = (res, msg, data = {}, statusCode = 200) => {
-  res
-    .status(statusCode)
-    .json(Object.keys(data).length > 0 ? data : { message: msg });
+//verify password
+const verify = async (password, hashedPassword) => {
+  let isMatch = await bcrpyt.compare(password, hashedPassword);
+  return isMatch;
 };
 
 module.exports = {
-  handleError,
-  handleSuccess,
+  hash,
+  verify,
 };

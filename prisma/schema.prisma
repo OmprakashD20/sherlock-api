@@ -10,7 +10,7 @@ datasource db {
 //Temporary
 model User {
   id       String @id @default(uuid())
-  kid      String
+  kid      String @unique
   name     String
   email    String @unique
   phone    String

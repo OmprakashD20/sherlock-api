@@ -1,19 +1,29 @@
 const express = require("express");
 
-const { handleSuccess } = require("../../utils/helper.util");
+//controllers
+const {
+  signInController,
+  signUpController,
+} = require("../../controllers/auth.controller");
 
-//Controllers
-
-//Validators
+//validators
+const {
+  signInValidator,
+  signUpValidator,
+} = require("../../validators/team.validator");
 
 const authRouter = express.Router();
 
 authRouter.get("/", (req, res) =>
-  handleSuccess(res, "Welcome to the Sherlock Authentication Route")
+  res.status(200).json({
+    message: "You hit the Auth API route",
+  })
 );
 
 //POST - /sign-up
+authRouter.post("/sign-up", signUpValidator, signUpController);
 
 //POST - /sign-in
+authRouter.post("/sign-in", signInValidator, signInController);
 
 module.exports = authRouter;
