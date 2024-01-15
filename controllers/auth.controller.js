@@ -1,12 +1,14 @@
+/* UTILS */
 const { hash, verify } = require("../utils/helper.util");
 
-//model helpers
+/* MODEL HELPERS */
 const { getUser } = require("../models/user.model");
 const { createTeam, getTeam } = require("../models/team.model");
 
-//JWT
+/* JWT */
 const { createJWT } = require("../services/jwt.service");
 
+/* AUTH CONTROLLERS */
 const signUpController = async (req, res) => {
   try {
     const { name, password, sherlockId, watsonId } = req.body;

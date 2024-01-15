@@ -1,4 +1,4 @@
-//Sample data
+/* DATA */
 const data = [
   {
     qn: "Which instrument does a pianist play?",

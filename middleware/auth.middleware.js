@@ -1,7 +1,7 @@
-//JWT
+/* JWT */
 const { verifyToken } = require("../services/jwt.service");
 
-//verify user
+/* AUTH MIDDLEWARE */
 const verifyUser = async (req, res, next) => {
   const token = req.headers.authorization;
   try {

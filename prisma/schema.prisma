@@ -20,15 +20,31 @@ model User {
 }
 
 model Team {
-  id       String @id @default(uuid())
-  name     String @unique
-  password String
-  sherlock String
-  Sherlock User   @relation("Sherlock", fields: [sherlock], references: [id])
-  watson   String
-  Watson   User   @relation("Watson", fields: [watson], references: [id])
+  id                  String    @id @default(uuid())
+  name                String    @unique
+  password            String
+  sherlock            String
+  Sherlock            User      @relation("Sherlock", fields: [sherlock], references: [id])
+  watson              String
+  Watson              User      @relation("Watson", fields: [watson], references: [id])
   //Score - Sherlock, Watson and Team
+  sherlockScore       Int       @default(0)
+  watsonScore         Int       @default(0)
+  round2Score         Int       @default(0)
+  teamScore           Int       @default(0)
   //Time - Sherlock and Watson in Round 1, Round 2
-  //No. of clues used by Sherlock and Watson
+  sherlockStartTime   DateTime  @default(now())
+  sherlockEndTime     DateTime?
+  watsonStartTime     DateTime  @default(now())
+  watsonEndTime       DateTime?
+  round2StartTime     DateTime  @default(now())
+  round2EndTime       DateTime?
+  //No. of clues used by Sherlock and Watson in Round 1, Round 2
+  cluesUsedBySherlock Int       @default(0)
+  cluesUsedByWatson   Int       @default(0)
+  cluesUsedInRound2   Int       @default(0)
   //Last clue - Sherlock and Watson in Round 1, Round 2
+  lastClueSherlock    String
+  lastClueWatson      String
+  lastClueRound2      String
 }
