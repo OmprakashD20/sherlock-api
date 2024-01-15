@@ -1,13 +1,13 @@
 const bcrpyt = require("bcryptjs");
 
-//hash password
+/* HASH PASSWORD */
 const hash = async (password) => {
   let salt = await bcrpyt.genSalt(10);
   let hashedPassword = await bcrpyt.hash(password, salt);
   return hashedPassword;
 };
 
-//verify password
+/* VERIFY PASSWORD */
 const verify = async (password, hashedPassword) => {
   let isMatch = await bcrpyt.compare(password, hashedPassword);
   return isMatch;

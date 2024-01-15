@@ -1,4 +1,4 @@
-//Sample data
+/* DATA */
 const data = [
   {
     qn: "What is the capital city of France?",

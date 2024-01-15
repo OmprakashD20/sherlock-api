@@ -1,6 +1,6 @@
 const joi = require("joi");
 
-//sign up schema
+/* SIGN UP SCHEMA */
 const signUpSchema = joi.object({
   name: joi.string().required().messages({
     "string.empty": "Team Name is required",
@@ -24,7 +24,7 @@ const signUpSchema = joi.object({
   }),
 });
 
-//sign in schema
+/* SIGN IN SCHEMA */
 const signInSchema = joi.object({
   name: joi.string().required().messages({
     "string.empty": "Team Name is required",
@@ -45,7 +45,7 @@ const signInSchema = joi.object({
   character: joi.string().valid("sherlock", "watson").required(),
 });
 
-//sign up validator
+/* SIGN UP VALIDATOR */
 const signUpValidator = (req, res, next) => {
   const { error } = signUpSchema.validate(req.body);
   if (error) {
@@ -58,7 +58,7 @@ const signUpValidator = (req, res, next) => {
   next();
 };
 
-//sign in validator
+/* SIGN IN VALIDATOR */
 const signInValidator = (req, res, next) => {
   const { error } = signInSchema.validate(req.body);
   if (error) {

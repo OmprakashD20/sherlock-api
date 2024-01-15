@@ -4,6 +4,7 @@ const router = express.Router();
 const authRouter = require("./auth.route");
 const sherlockRouter = require("./sherlock.route");
 const watsonRouter = require("./watson.route");
+const teamRouter = require("./team.route");
 
 router.get("/", (req, res) =>
   res.status(200).json({
@@ -11,16 +12,19 @@ router.get("/", (req, res) =>
   })
 );
 
-//auth routes
+/* AUTH ROUTES */
 router.use("/", authRouter);
 
-//sherlock routes
+/* SHERLOCK ROUTES */
 router.use("/sherlock", sherlockRouter);
 
-//watson routes
+/* WATSON ROUTES */
 router.use("/watson", watsonRouter);
 
-//round 2 routes
+/* ROUND 2 ROUTES */
 router.use("/round2", sherlockRouter);
+
+/* TEAM ROUTES */
+router.use("/team", teamRouter);
 
 module.exports = router;

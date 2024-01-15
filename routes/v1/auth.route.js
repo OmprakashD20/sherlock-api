@@ -1,12 +1,12 @@
 const express = require("express");
 
-//controllers
+/* CONTROLLERS */
 const {
   signInController,
   signUpController,
 } = require("../../controllers/auth.controller");
 
-//validators
+/* VALIDATORS */
 const {
   signInValidator,
   signUpValidator,

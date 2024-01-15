@@ -9,7 +9,7 @@ router.get("/", (req, res) =>
   })
 );
 
-//v1 routes
+/* v1 ROUTES */
 router.use("/v1", v1Route);
 
 module.exports = router;
