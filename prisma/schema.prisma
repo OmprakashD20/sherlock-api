@@ -33,18 +33,18 @@ model Team {
   round2Score         Int       @default(0)
   teamScore           Int       @default(0)
   //Time - Sherlock and Watson in Round 1, Round 2
-  sherlockStartTime   DateTime  @default(now())
+  sherlockStartTime   DateTime?
   sherlockEndTime     DateTime?
-  watsonStartTime     DateTime  @default(now())
+  watsonStartTime     DateTime?
   watsonEndTime       DateTime?
-  round2StartTime     DateTime  @default(now())
+  round2StartTime     DateTime?
   round2EndTime       DateTime?
   //No. of clues used by Sherlock and Watson in Round 1, Round 2
   cluesUsedBySherlock Int       @default(0)
   cluesUsedByWatson   Int       @default(0)
   cluesUsedInRound2   Int       @default(0)
   //Last clue - Sherlock and Watson in Round 1, Round 2
-  lastClueSherlock    String
-  lastClueWatson      String
-  lastClueRound2      String
+  lastClueSherlock    Int       @default(0)
+  lastClueWatson      Int       @default(0)
+  lastClueRound2      Int       @default(0)
 }

@@ -13,7 +13,15 @@ const verify = async (password, hashedPassword) => {
   return isMatch;
 };
 
+/* COMPARE ANSWER */
+const compareAnswer = (submission, answer) => {
+  const normalisedSubmission = submission.replace(/[ ]/g, "").toLowerCase();
+  const normalisedAnswer = answer.replace(/[ ]/g, "").toLowerCase();
+  return normalisedSubmission === normalisedAnswer;
+};
+
 module.exports = {
+  compareAnswer,
   hash,
   verify,
 };

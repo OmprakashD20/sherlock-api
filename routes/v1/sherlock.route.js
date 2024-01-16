@@ -12,6 +12,7 @@ const {
 
 /* MIDDLEWARES */
 const verifyUser = require("../../middleware/auth.middleware");
+const { verifySherlock } = require("../../middleware/user.middleware");
 
 /* VALIDATORS */
 
@@ -26,13 +27,28 @@ sherlockRouter.get("/", verifyUser, (req, res) =>
 /* ROUND 1 SHERLOCK ROUTES */
 
 //GET - /round1/:qn
-sherlockRouter.get("/round1/:qn", verifyUser, getRound1Question);
+sherlockRouter.get(
+  "/round1/:qn",
+  verifyUser,
+  verifySherlock,
+  getRound1Question
+);
 
 //POST - /round1/:qn/clue
-sherlockRouter.post("/round1/:qn/clue", verifyUser, getRound1Clue);
+sherlockRouter.post(
+  "/round1/:qn/clue",
+  verifyUser,
+  verifySherlock,
+  getRound1Clue
+);
 
 //POST - /round1/:qn
-sherlockRouter.post("/round1/:qn", verifyUser, postRound1Answer);
+sherlockRouter.post(
+  "/round1/:qn",
+  verifyUser,
+  verifySherlock,
+  postRound1Answer
+);
 
 /* ROUND 2 ROUTES */
 
