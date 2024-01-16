@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Team" ALTER COLUMN "round2StartTime" DROP NOT NULL,
+ALTER COLUMN "round2StartTime" DROP DEFAULT,
+ALTER COLUMN "sherlockStartTime" DROP NOT NULL,
+ALTER COLUMN "sherlockStartTime" DROP DEFAULT,
+ALTER COLUMN "watsonStartTime" DROP NOT NULL,
+ALTER COLUMN "watsonStartTime" DROP DEFAULT;

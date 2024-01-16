@@ -10,6 +10,7 @@ const TEAM_SELECT_FIELDS = {
   password: false,
 };
 
+/* TEAM */
 const createTeam = async (name, hashedPassword, sherlockId, watsonId) => {
   const existingTeam = await prisma.team.findUnique({
     where: {
@@ -55,4 +56,111 @@ const getTeam = async (name) => {
   return team;
 };
 
-module.exports = { createTeam, getTeam };
+/* SHERLOCK */
+const isSherlock = async (teamId, kid) => {
+  const isSherlock =
+    (await prisma.team.findUnique({
+      where: {
+        id: teamId,
+        Sherlock: { kid },
+      },
+    })) !== null
+      ? true
+      : false;
+  return isSherlock;
+};
+
+const getSherlockLastClue = async (teamId) => {
+  const { lastClueSherlock } = await prisma.team.findUnique({
+    where: {
+      id: teamId,
+    },
+    select: {
+      lastClueSherlock: true,
+    },
+  });
+  return lastClueSherlock;
+};
+
+const setSherlockLastClue = async (teamId, lastClueSherlock) => {
+  await prisma.team.update({
+    where: {
+      id: teamId,
+    },
+    data: {
+      cluesUsedBySherlock: {
+        increment: 1,
+      },
+      lastClueSherlock: parseInt(lastClueSherlock),
+      sherlockScore: {
+        decrement: 5,
+      },
+    },
+  });
+};
+
+const setSherlockScore = async (teamId) => {
+  await prisma.team.update({
+    where: {
+      id: teamId,
+    },
+    data: {
+      sherlockScore: {
+        increment: 10,
+      },
+    },
+  });
+};
+
+const startSherlockTimer = async (teamId) => {
+  await prisma.team.update({
+    where: {
+      id: teamId,
+    },
+    data: {
+      sherlockStartTime: new Date(),
+    },
+  });
+};
+
+const endSherlockTimer = async (teamId) => {
+  const sherlockTimings = await prisma.team.update({
+    where: {
+      id: teamId,
+    },
+    data: {
+      sherlockEndTime: new Date(),
+    },
+    select: {
+      sherlockStartTime: true,
+      sherlockEndTime: true,
+    },
+  });
+  return sherlockTimings;
+};
+
+/* WATSON */
+const isWatson = async (teamId, kid) => {
+  const isWatson =
+    (await prisma.team.findUnique({
+      where: {
+        id: teamId,
+        Watson: { kid },
+      },
+    })) !== null
+      ? true
+      : false;
+  return isWatson;
+};
+
+module.exports = {
+  createTeam,
+  getTeam,
+  isSherlock,
+  getSherlockLastClue,
+  setSherlockLastClue,
+  setSherlockScore,
+  startSherlockTimer,
+  endSherlockTimer,
+  isWatson,
+};
