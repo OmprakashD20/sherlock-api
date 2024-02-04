@@ -88,6 +88,9 @@ export const signInController = async (
     res.status(200).json({
       message: "Login successful!!",
       token,
+      name: team.name,
+      character,
+      kid,
     });
   } catch (err) {
     console.error(err);

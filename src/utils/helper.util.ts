@@ -18,3 +18,21 @@ export const compareAnswer = (submission: string, answer: string) => {
 
   return normalizedSubmission === normalizedAnswer;
 };
+
+//calculate the time taken
+export const calculateTimeTaken = (startTime: number, endTime: number) => {
+  const timeInMilliSeconds: number = endTime - startTime;
+
+  const timeInSeconds = timeInMilliSeconds / 1000;
+
+  // Convert seconds to hours, minutes, and seconds
+  const hours = Math.floor(timeInSeconds / 3600);
+  const minutes = Math.floor((timeInSeconds % 3600) / 60);
+  const seconds = Math.floor(timeInSeconds % 60);
+
+  return {
+    hours,
+    minutes,
+    seconds,
+  };
+};

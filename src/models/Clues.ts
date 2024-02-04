@@ -1,6 +1,6 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 
-import { Base } from "@/models";
+import { Base, Team } from "@/models";
 
 @Entity("Clues")
 export class Clues extends Base {
@@ -21,4 +21,10 @@ export class Clues extends Base {
 
   @Column({ default: 0 })
   lastClueUsedInRound2: number;
+
+  @OneToOne(() => Team, (team) => team.clues, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "teamId", referencedColumnName: "id" })
+  team: Team;
 }

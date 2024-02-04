@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 
-import { Base, Clues, Score, Time } from "@/models";
+import { Base, Clues, Question, Score, Time } from "@/models";
 
 @Entity("Team")
 export class Team extends Base {
@@ -16,18 +16,19 @@ export class Team extends Base {
   @Column()
   watson: string;
 
+  //questions
+  @OneToOne(() => Question, (question) => question.team, { cascade: true })
+  question: Question;
+
   //scores
-  @OneToOne(() => Score)
-  @JoinColumn()
+  @OneToOne(() => Score, (score) => score.team, { cascade: true })
   score: Score;
 
   //timings
-  @OneToOne(() => Time)
-  @JoinColumn()
+  @OneToOne(() => Time, (time) => time.team, { cascade: true })
   time: Time;
 
   //clues
-  @OneToOne(() => Clues)
-  @JoinColumn()
+  @OneToOne(() => Clues, (clues) => clues.team, { cascade: true })
   clues: Clues;
 }

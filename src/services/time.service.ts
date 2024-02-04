@@ -1,0 +1,65 @@
+import AppDataSource from "@/data-source";
+
+import { Time } from "@/models";
+
+export const timeRepository = AppDataSource.getRepository(Time);
+
+export const startSherlockTimer = (teamId: string) => {
+  return timeRepository
+    .createQueryBuilder()
+    .update()
+    .set({ sherlockStartTime: new Date() })
+    .where("teamId = :teamId", { teamId })
+    .execute();
+};
+
+export const endSherlockTimer = (teamId: string) => {
+  return timeRepository
+    .createQueryBuilder()
+    .update()
+    .set({ sherlockEndTime: new Date() })
+    .where("teamId = :teamId", { teamId })
+    .execute();
+};
+
+export const startWatsonTimer = (teamId: string) => {
+  return timeRepository
+    .createQueryBuilder()
+    .update()
+    .set({ watsonStartTime: new Date() })
+    .where("teamId = :teamId", { teamId })
+    .execute();
+};
+
+export const endWatsonTimer = (teamId: string) => {
+  return timeRepository
+    .createQueryBuilder()
+    .update()
+    .set({ watsonEndTime: new Date() })
+    .where("teamId = :teamId", { teamId })
+    .execute();
+};
+
+export const getSherlockTiming = async (teamId: string) => {
+  const timings: Time = await timeRepository
+    .createQueryBuilder("time")
+    .where("time.teamId = :teamId", { teamId })
+    .getOne();
+
+  return {
+    sherlockStartTime: timings.sherlockStartTime,
+    sherlockEndTime: timings.sherlockEndTime,
+  };
+};
+
+export const getWatsonTiming = async (teamId: string) => {
+  const timings: Time = await timeRepository
+    .createQueryBuilder("time")
+    .where("time.teamId = :teamId", { teamId })
+    .getOne();
+
+  return {
+    watsonStartTime: timings.watsonStartTime,
+    watsonEndTime: timings.watsonEndTime,
+  };
+};

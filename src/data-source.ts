@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 
-import { Clues, Score, Team, Time } from "@/models";
+import { Clues, Question, Score, Team, Time } from "@/models";
 
 const AppDataSource = new DataSource({
   type: "postgres",
@@ -9,7 +9,7 @@ const AppDataSource = new DataSource({
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
-  entities: [Clues, Score, Team, Time],
+  entities: [Clues, Score, Team, Time, Question],
   logging: ["error"],
   synchronize: true,
 });

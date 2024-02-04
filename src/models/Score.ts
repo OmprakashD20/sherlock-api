@@ -1,6 +1,6 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 
-import { Base } from "@/models";
+import { Base, Team } from "@/models";
 
 @Entity("Score")
 export class Score extends Base {
@@ -18,4 +18,10 @@ export class Score extends Base {
 
   @Column({ default: 0 })
   teamScore: number;
+
+  @OneToOne(() => Team, (team) => team.score, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "teamId", referencedColumnName: "id" })
+  team: Team;
 }
