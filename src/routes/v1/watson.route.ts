@@ -19,6 +19,7 @@ watsonRouter.use(verifyToken);
 
 // round 1
 
+//GET - get questions
 watsonRouter.get(
   "/round1/:qn",
   verifyWatson,
@@ -26,6 +27,8 @@ watsonRouter.get(
   validate(QnSchema),
   getWatsonRound1Question
 );
+
+//GET - get clues
 watsonRouter.get(
   "/round1/:qn/clue",
   verifyWatson,
@@ -33,6 +36,8 @@ watsonRouter.get(
   validate(QnSchema),
   getWatsonRound1Clue
 );
+
+//POST - submit answers
 watsonRouter.post(
   "/round1/:qn",
   verifyWatson,

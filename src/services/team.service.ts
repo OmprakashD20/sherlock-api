@@ -42,4 +42,16 @@ export const isWatson = async (kid: string, teamId: string) => {
   return (await findTeamById(teamId)).watson === kid;
 };
 
-export const getLeaderboard = async () => {};
+export const getLeaderboardDetails = () => {
+  return teamRepository
+    .createQueryBuilder("team")
+    .select([
+      "team.id",
+      "team.name",
+      "team.sherlock",
+      "team.watson",
+    ])
+    .leftJoinAndSelect("team.score", "score")
+    .leftJoinAndSelect("team.time", "time")
+    .getMany();
+};

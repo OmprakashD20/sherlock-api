@@ -19,6 +19,7 @@ sherlockRouter.use(verifyToken);
 
 // round 1
 
+//GET - get questions
 sherlockRouter.get(
   "/round1/:qn",
   verifySherlock,
@@ -26,6 +27,8 @@ sherlockRouter.get(
   validate(QnSchema),
   getSherlockRound1Question
 );
+
+//GET - get clues
 sherlockRouter.get(
   "/round1/:qn/clue",
   verifySherlock,
@@ -33,6 +36,8 @@ sherlockRouter.get(
   validate(QnSchema),
   getSherlockRound1Clue
 );
+
+//POST - submit answers
 sherlockRouter.post(
   "/round1/:qn",
   verifySherlock,
@@ -43,8 +48,13 @@ sherlockRouter.post(
 
 // round 2
 
+//GET - get questions
 sherlockRouter.get("/round2/:qn", validate(QnSchema));
+
+//GET - get clues
 sherlockRouter.post("/round2/:qn/clue", verifyToken);
+
+//POST - submit answers
 sherlockRouter.post("/round2/:qn", verifyToken);
 
 export default sherlockRouter;
