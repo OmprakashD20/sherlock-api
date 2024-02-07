@@ -4,7 +4,7 @@ import express from "express";
 import { verifyToken } from "@/middlewares";
 
 //controllers
-import { getLeaderboard, getTeamDetails } from "@/controllers";
+import { getRound1Leaderboard, getTeamDetails } from "@/controllers";
 
 const teamRouter = express.Router();
 
@@ -12,6 +12,6 @@ const teamRouter = express.Router();
 teamRouter.get("/details", verifyToken, getTeamDetails);
 
 //GET - leaderboard
-teamRouter.get("/leaderboard", verifyToken, getLeaderboard);
+teamRouter.get("/leaderboard", verifyToken, getRound1Leaderboard);
 
 export default teamRouter;

@@ -16,6 +16,10 @@ export class Team extends Base {
   @Column()
   watson: string;
 
+  //restrict the second user from logging in, if the first user is already logged in
+  @Column({ default: false })
+  isLoggedIn: boolean;
+
   //questions
   @OneToOne(() => Question, (question) => question.team, { cascade: true })
   question: Question;
