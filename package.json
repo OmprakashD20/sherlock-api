@@ -2,7 +2,7 @@
   "name": "sherlock-api-24",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "start": "node build/index.js",
     "build": "npx tsc",
