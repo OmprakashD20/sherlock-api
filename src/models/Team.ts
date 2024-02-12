@@ -14,7 +14,13 @@ export class Team extends Base {
   sherlock: string;
 
   @Column()
+  sherlockMail: string;
+
+  @Column()
   watson: string;
+
+  @Column()
+  watsonMail: string;
 
   //restrict the second user from logging in, if the first user is already logged in
   @Column({ default: false })

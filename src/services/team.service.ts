@@ -45,12 +45,7 @@ export const isWatson = async (kid: string, teamId: string) => {
 export const getLeaderboardDetails = () => {
   return teamRepository
     .createQueryBuilder("team")
-    .select([
-      "team.id",
-      "team.name",
-      "team.sherlock",
-      "team.watson",
-    ])
+    .select(["team.id", "team.name", "team.sherlock", "team.watson"])
     .leftJoinAndSelect("team.score", "score")
     .leftJoinAndSelect("team.time", "time")
     .getMany();

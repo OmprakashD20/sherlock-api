@@ -3,6 +3,23 @@ import { JwtPayload } from "jsonwebtoken";
 
 import { verifyJWT } from "@/utils";
 
+//verify k!24 user middleware
+export const verifyKUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    //todo: check if the user's kid and email matches the one in the k! 24 database
+    next();
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Internal server error!!",
+    });
+  }
+};
+
 //auth middleware
 export const verifyToken = async (
   req: Request,
@@ -23,9 +40,9 @@ export const verifyToken = async (
         message: "Token verification failed, authorization denied.",
       });
 
-    //todo: check if the team and the user exists
     res.locals.teamId = payload.teamId;
     res.locals.kid = payload.kid;
+    res.locals.email = payload.email;
 
     next();
   } catch (err: any) {

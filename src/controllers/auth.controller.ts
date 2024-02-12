@@ -12,7 +12,8 @@ export const signUpController = async (
   res: Response
 ) => {
   try {
-    const { name, password, sherlock, watson } = req.body;
+    const { name, password, sherlock, watson, sherlockMail, watsonMail } =
+      req.body;
 
     //check if team already exists
     if (await findTeamByName(name))
@@ -29,6 +30,8 @@ export const signUpController = async (
       password: hashedPassword,
       sherlock,
       watson,
+      sherlockMail,
+      watsonMail,
     });
 
     if (!newTeam)
@@ -51,7 +54,7 @@ export const signInController = async (
   res: Response
 ) => {
   try {
-    const { name, password, kid, character } = req.body;
+    const { name, email, password, kid, character } = req.body;
 
     //check if team exists
     const team = await findTeamByName(name);
@@ -70,26 +73,37 @@ export const signInController = async (
       });
 
     //check if the user is trying to login as the correct character
-    if (character === "sherlock")
+    if (character === "sherlock") {
       if (!team.sherlock || team.sherlock !== kid)
         return res.status(401).json({
           error: "Invalid character!!",
         });
+      if (team.sherlockMail !== email)
+        return res.status(401).json({
+          error: "Invalid email!!",
+        });
+    }
 
-    if (character === "watson")
+    if (character === "watson") {
       if (!team.watson || team.watson !== kid)
         return res.status(401).json({
           error: "Invalid character!!",
         });
+      if (team.watsonMail !== email)
+        return res.status(401).json({
+          error: "Invalid email!!",
+        });
+    }
 
     //create JWT
-    const token = createJWT(kid, team.id);
+    const token = createJWT(kid, team.id, email);
 
     res.status(200).json({
       message: "Login successful!!",
       token,
       name: team.name,
       character,
+      email,
       kid,
     });
   } catch (err) {

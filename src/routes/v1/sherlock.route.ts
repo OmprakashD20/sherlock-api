@@ -52,9 +52,9 @@ sherlockRouter.post(
 sherlockRouter.get("/round2/:qn", validate(QnSchema));
 
 //GET - get clues
-sherlockRouter.post("/round2/:qn/clue", verifyToken);
+sherlockRouter.post("/round2/:qn/clue", validate(QnSchema));
 
 //POST - submit answers
-sherlockRouter.post("/round2/:qn", verifyToken);
+sherlockRouter.post("/round2/:qn", validate(AnswerSchema));
 
 export default sherlockRouter;

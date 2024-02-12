@@ -15,6 +15,20 @@ export const SignUpSchema = z.object({
     watson: z.string().length(8, {
       message: "Your K! ID must be 8 characters long",
     }),
+    sherlockMail: z
+      .string({
+        required_error: "Email is required",
+      })
+      .email({
+        message: "Invalid email address",
+      }),
+    watsonMail: z
+      .string({
+        required_error: "Email is required",
+      })
+      .email({
+        message: "Invalid email address",
+      }),
   }),
 });
 
@@ -26,6 +40,13 @@ export const SignInSchema = z.object({
     name: z.string({
       required_error: "Team name is required",
     }),
+    email: z
+      .string({
+        required_error: "Email is required",
+      })
+      .email({
+        message: "Invalid email address",
+      }),
     password: z.string(),
     kid: z.string().length(8, {
       message: "Your K! ID must be 8 characters long",

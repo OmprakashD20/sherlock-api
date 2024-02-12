@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
 
-export const createJWT = (kid: string, teamId: string) => {
+export const createJWT = (kid: string, teamId: string, email: string) => {
   //payload contains the kid of the user who has logged in and the teamId
   const payload = {
     kid,
     teamId,
+    email,
   };
 
   return jwt.sign(payload, process.env.JWT_SECRET, {
