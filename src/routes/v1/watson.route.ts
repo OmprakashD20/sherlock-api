@@ -15,8 +15,7 @@ import {
 } from "@/middlewares";
 
 //validators
-import { validate } from "@/validators";
-import { AnswerSchema, QnSchema } from "@/validators/team.validator";
+import { AnswerSchema, QnSchema, validate } from "@/validators";
 
 const watsonRouter = express.Router();
 

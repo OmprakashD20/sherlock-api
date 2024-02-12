@@ -8,11 +8,14 @@ import {
 } from "@/controllers";
 
 //middleware
-import { checkSherlockLastQuestion, verifySherlock, verifyToken } from "@/middlewares";
+import {
+  checkSherlockLastQuestion,
+  verifySherlock,
+  verifyToken,
+} from "@/middlewares";
 
 //validators
-import { validate } from "@/validators";
-import { AnswerSchema, QnSchema } from "@/validators/team.validator";
+import { AnswerSchema, QnSchema, validate } from "@/validators";
 
 const sherlockRouter = express.Router();
 
