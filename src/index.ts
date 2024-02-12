@@ -1,4 +1,4 @@
-require("dotenv-flow").config();
+import "dotenv/config";
 
 import express, { Request, Response } from "express";
 
