@@ -15,7 +15,7 @@ const AppDataSource = new DataSource({
   },
   entities: [Clues, Score, Team, Time, Question],
   logging: ["error"],
-  synchronize: true,
+  synchronize: false,
 });
 
 export default AppDataSource;
