@@ -65,3 +65,14 @@ export const updateRound2Score = (teamId: string, score: number) => {
     .where("teamId = :teamId", { teamId })
     .execute();
 };
+
+export const updateTeamScore = (teamId: string) => {
+  return scoreRepository
+    .createQueryBuilder()
+    .update()
+    .set({
+      teamScore: () => "round1Score + round2Score",
+    })
+    .where("teamId = :teamId", { teamId })
+    .execute();
+};

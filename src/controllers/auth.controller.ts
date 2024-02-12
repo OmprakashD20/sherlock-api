@@ -5,7 +5,11 @@ import { hashData, verifyData, createJWT } from "@/utils";
 import { SignInSchemaType, SignUpSchemaType } from "@/validators";
 
 //services
-import { createNewTeam, findTeamByName } from "@/services";
+import {
+  createNewTeam,
+  findTeamByName,
+  setLogInStatus,
+} from "@/services";
 
 export const signUpController = async (
   req: Request<{}, {}, SignUpSchemaType>,
@@ -82,6 +86,7 @@ export const signInController = async (
         return res.status(401).json({
           error: "Invalid email!!",
         });
+      await setLogInStatus(team.id);
     }
 
     if (character === "watson") {
@@ -93,6 +98,7 @@ export const signInController = async (
         return res.status(401).json({
           error: "Invalid email!!",
         });
+      await setLogInStatus(team.id);
     }
 
     //create JWT

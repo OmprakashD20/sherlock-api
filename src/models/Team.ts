@@ -22,9 +22,16 @@ export class Team extends Base {
   @Column()
   watsonMail: string;
 
+  @Column({ default: false })
+  round1Cleared: boolean;
+
   //restrict the second user from logging in, if the first user is already logged in
   @Column({ default: false })
   isLoggedIn: boolean;
+
+  //to identify which user has currently logged in
+  @Column({ default: null })
+  character: string;
 
   //questions
   @OneToOne(() => Question, (question) => question.team, { cascade: true })

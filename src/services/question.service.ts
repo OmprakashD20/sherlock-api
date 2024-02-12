@@ -85,3 +85,24 @@ export const isWatsonCompleted = async (teamId: string) => {
       .getOne()
   ).isWatsonCompleted;
 };
+
+export const getRound2CurrentQuestion = async (teamId: string) => {
+  return (
+    await questionRepository
+      .createQueryBuilder("question")
+      .where("question.teamId = :teamId", { teamId })
+      .getOne()
+  ).round2CurrentQuestion;
+};
+
+export const setRound2CurrentQuestion = (
+  teamId: string,
+  questionId: number
+) => {
+  return questionRepository
+    .createQueryBuilder()
+    .update()
+    .set({ round2CurrentQuestion: questionId })
+    .where("teamId = :teamId", { teamId })
+    .execute();
+};

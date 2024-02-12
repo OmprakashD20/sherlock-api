@@ -63,3 +63,33 @@ export const getWatsonTiming = async (teamId: string) => {
     watsonEndTime: timings.watsonEndTime,
   };
 };
+
+export const startRound2Timer = (teamId: string) => {
+  return timeRepository
+    .createQueryBuilder()
+    .update()
+    .set({ round2StartTime: new Date() })
+    .where("teamId = :teamId", { teamId })
+    .execute();
+};
+
+export const endRound2Timer = (teamId: string) => {
+  return timeRepository
+    .createQueryBuilder()
+    .update()
+    .set({ round2EndTime: new Date() })
+    .where("teamId = :teamId", { teamId })
+    .execute();
+};
+
+export const getRound2Timing = async (teamId: string) => {
+  const timings: Time = await timeRepository
+    .createQueryBuilder("time")
+    .where("time.teamId = :teamId", { teamId })
+    .getOne();
+
+  return {
+    round2StartTime: timings.round2StartTime,
+    round2EndTime: timings.round2EndTime,
+  };
+};

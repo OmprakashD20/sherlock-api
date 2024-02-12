@@ -4,6 +4,45 @@ import { Clues, Question, Score, Team, Time } from "@/models";
 
 export const teamRepository = AppDataSource.getRepository(Team);
 
+export const getLogInStatus = async (teamId: string) => {
+  const team = await findTeamById(teamId);
+  return team.isLoggedIn;
+};
+
+export const setLogInStatus = async (teamId: string) => {
+  const isLoggedIn = await getLogInStatus(teamId);
+  if (isLoggedIn) return;
+  return teamRepository
+    .createQueryBuilder()
+    .update()
+    .set({
+      isLoggedIn: true,
+    })
+    .where("id = :teamId", { teamId })
+    .execute();
+};
+
+export const getRound1Status = async (teamId: string) => {
+  const team = await findTeamById(teamId);
+  return team.round1Cleared;
+};
+
+export const getRound2Status = async (teamId: string) => {
+  const team = await findTeamById(teamId);
+  return team.character;
+};
+
+export const setRound2Status = async (teamId: string, character: string | null) => {
+  return teamRepository
+    .createQueryBuilder()
+    .update()
+    .set({
+      character: `${character}`,
+    })
+    .where("id = :teamId", { teamId })
+    .execute();
+};
+
 export const findTeamByName = (name: string) => {
   return teamRepository
     .createQueryBuilder("team")
@@ -49,4 +88,18 @@ export const getLeaderboardDetails = () => {
     .leftJoinAndSelect("team.score", "score")
     .leftJoinAndSelect("team.time", "time")
     .getMany();
+};
+
+export const getCharacter = async (kid: string, teamId: string) => {
+  const team = await findTeamById(teamId);
+  if (kid === team.sherlock)
+    return {
+      isSherlock: true,
+      isWatson: false,
+    };
+  else
+    return {
+      isSherlock: false,
+      isWatson: true,
+    };
 };

@@ -23,6 +23,7 @@ import {
   updateWatsonScore,
 } from "@/services";
 
+//watson round 1 controllers
 export const getWatsonRound1Question = async (
   req: Request<QnSchemaType, {}, {}>,
   res: Response
@@ -168,14 +169,12 @@ export const submitWatsonRound1Answer = async (
       await setWatsonCurrentQuestion(res.locals.teamId, parseInt(qn));
 
       //check if it is the penultimate question
-      const isPenultimateQn = parseInt(qn) === watsonData.length - 1;
+      const isLastQnForWatson = parseInt(qn) === watsonData.length;
 
-      if (isPenultimateQn) await setWatsonStatus(res.locals.teamId);
+      //this is to make sure that watson can attend only the first 9 questions, and the last question can only be answered by sherlock
+      if (isLastQnForWatson) {
+        await setWatsonStatus(res.locals.teamId);
 
-      //check if this is the last question
-      const isGameOver = parseInt(qn) === watsonData.length;
-
-      if (isGameOver) {
         //end the timer
         await endWatsonTimer(res.locals.teamId);
 
@@ -199,7 +198,7 @@ export const submitWatsonRound1Answer = async (
         return res.status(200).json({
           message: "Correct Answer!!",
           remark: "Your score has been incremented by 10 points!!",
-          gameover: isGameOver,
+          gameover: isLastQnForWatson,
           time: {
             time: `You have taken ${hours} hours, ${minutes} minutes, ${seconds} seconds to complete round 1 of the game`,
             hours,
@@ -211,8 +210,7 @@ export const submitWatsonRound1Answer = async (
       return res.status(200).json({
         message: "Correct Answer!!",
         remark: "Your score has been incremented by 10 points!!",
-        gameover: isGameOver,
-        isPenultimateQn,
+        isGameOver: isLastQnForWatson,
       });
     } else {
       return res.status(200).json({

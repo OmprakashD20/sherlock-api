@@ -1,7 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 
 //services
-import { isSherlock, isWatson } from "@/services";
+import {
+  getCharacter,
+  getLogInStatus,
+  getRound2Status,
+  isSherlock,
+  isWatson,
+  setRound2Status,
+} from "@/services";
 
 export const verifySherlock = async (
   req: Request,
@@ -40,6 +47,52 @@ export const verifyWatson = async (
         message: "You are not the watson of your team.",
       });
     }
+    next();
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Internal Server Error!!",
+    });
+  }
+};
+
+export const restrictSecondUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const teamId = res.locals.teamId;
+
+    //check if a user has already logged in
+    const { isSherlock, isWatson } = await getCharacter(res.locals.kid, teamId);
+
+    //restrict the second user from logging in
+
+    const character = await getRound2Status(teamId);
+
+    if (!character) {
+      const userCharacter = isSherlock ? "sherlock" : "watson";
+      await setRound2Status(teamId, userCharacter);
+      next();
+    }
+
+    if (isSherlock) {
+      const isLoggedIn = await getLogInStatus(teamId);
+      if (isLoggedIn && character !== "sherlock")
+        return res.status(409).json({
+          message: "Oops! Looks like Watson is already in the game.",
+        });
+    }
+
+    if (isWatson) {
+      const isLoggedIn = await getLogInStatus(teamId);
+      if (isLoggedIn && character !== "watson")
+        return res.status(409).json({
+          message: "Oops! Looks like Sherlock is already in the game.",
+        });
+    }
+
     next();
   } catch (err) {
     console.error(err);

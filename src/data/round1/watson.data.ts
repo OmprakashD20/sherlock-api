@@ -25,9 +25,4 @@ export const watsonData: Question[] = [
     answer: "A Study in Scarlet",
     clue: "This fictional detective is known for his brilliant deductive reasoning and iconic deerstalker hat.",
   },
-  {
-    question: "What is the tallest mountain in the world?",
-    answer: "Mount Everest",
-    clue: "Located in the Himalayas, this peak reaches an elevation of over 29,000 feet above sea level.",
-  },
 ];

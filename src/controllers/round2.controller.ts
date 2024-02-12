@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 //data
-import { sherlockData, round2Data } from "@/data";
+import { round2Data } from "@/data";
 
 //utils
 import { calculateTimeTaken, compareAnswer } from "@/utils";
@@ -12,28 +12,18 @@ import {
 } from "@/validators/team.validator";
 import {
   endRound2Timer,
-  endSherlockTimer,
-  getLastClueUsedBySherlock,
   getLastClueUsedInRound2,
   getRound2CurrentQuestion,
   getRound2Timing,
-  getSherlockCurrentQuestion,
-  getSherlockTiming,
-  setLastClueUsedBySherlock,
   setLastClueUsedInRound2,
   setRound2CurrentQuestion,
-  setSherlockCurrentQuestion,
-  setSherlockStatus,
   startRound2Timer,
-  startSherlockTimer,
-  updateRound1ScoreBySherlock,
   updateRound2Score,
-  updateSherlockScore,
   updateTeamScore,
 } from "@/services";
 
-//sherlock round 1 controllers
-export const getSherlockRound1Question = async (
+//round 2 controllers
+export const getRound2Question = async (
   req: Request<QnSchemaType, {}, {}>,
   res: Response
 ) => {
@@ -41,13 +31,13 @@ export const getSherlockRound1Question = async (
     const { qn } = req.params;
 
     //check if the game is over
-    if (parseInt(qn) > sherlockData.length)
+    if (parseInt(qn) > round2Data.length)
       return res.status(409).json({
         message: "No more questions, Game Over!!",
       });
 
     //check if he/she is requesting the question in correct sequence
-    const currentQn = (await getSherlockCurrentQuestion(res.locals.teamId)) + 1;
+    const currentQn = (await getRound2CurrentQuestion(res.locals.teamId)) + 1;
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
         message:
@@ -57,11 +47,11 @@ export const getSherlockRound1Question = async (
       });
 
     //check if the question number is valid
-    if (sherlockData[parseInt(qn) - 1]) {
+    if (round2Data[parseInt(qn) - 1]) {
       //start the timer if it is the first question
-      if (parseInt(qn) === 1) await startSherlockTimer(res.locals.teamId);
+      if (parseInt(qn) === 1) await startRound2Timer(res.locals.teamId);
 
-      const question = sherlockData[parseInt(qn) - 1].question;
+      const question = round2Data[parseInt(qn) - 1].question;
 
       return res.status(200).json({
         question,
@@ -81,7 +71,7 @@ export const getSherlockRound1Question = async (
   }
 };
 
-export const getSherlockRound1Clue = async (
+export const getRound2Clue = async (
   req: Request<QnSchemaType, {}, {}>,
   res: Response
 ) => {
@@ -89,41 +79,41 @@ export const getSherlockRound1Clue = async (
     const { qn } = req.params;
 
     //check if the game is over
-    if (parseInt(qn) > sherlockData.length)
+    if (parseInt(qn) > round2Data.length)
       return res.status(409).json({
         message: "No more questions, Game Over!!",
       });
 
     //check if the question number is valid
-    if (!sherlockData[parseInt(qn) - 1])
+    if (!round2Data[parseInt(qn) - 1])
       return res.status(404).json({ message: "Question not found!!" });
 
     //check if he/she is requesting the clue for the current question
-    const currentQn = (await getSherlockCurrentQuestion(res.locals.teamId)) + 1;
+    const currentQn = (await getRound2CurrentQuestion(res.locals.teamId)) + 1;
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
         message: "You can only request clue for the current question!!",
       });
 
-    //get the last clue used by sherlock
-    const lastClueUsedBySherlock = await getLastClueUsedBySherlock(
+    //get the last clue used in round 2
+    const lastClueUsedInRound2 = await getLastClueUsedInRound2(
       res.locals.teamId
     );
 
     //check if the clue has already been used
-    if (parseInt(qn) === lastClueUsedBySherlock)
+    if (parseInt(qn) === lastClueUsedInRound2)
       return res.status(410).json({
         message: "Clue has already been used for this question!!",
       });
 
     //get the clue
-    const data = sherlockData[parseInt(qn) - 1];
+    const data = round2Data[parseInt(qn) - 1];
 
-    //set the last clue used by sherlock as the current question
-    await setLastClueUsedBySherlock(res.locals.teamId, parseInt(qn));
+    //set the last clue used in round 2 as the current question
+    await setLastClueUsedInRound2(res.locals.teamId, parseInt(qn));
 
-    //deduct 5 points from his/her score
-    await updateSherlockScore(res.locals.teamId, -5);
+    //deduct 5 points from the round 2 score
+    await updateRound2Score(res.locals.teamId, -5);
 
     return res.status(200).json({
       question: data.question,
@@ -139,7 +129,7 @@ export const getSherlockRound1Clue = async (
   }
 };
 
-export const submitSherlockRound1Answer = async (
+export const submitRound2Answer = async (
   req: Request<AnswerSchemaParamsType, {}, AnswerSchemaBodyType>,
   res: Response
 ) => {
@@ -148,13 +138,13 @@ export const submitSherlockRound1Answer = async (
     const { answer } = req.body;
 
     //check if the game is over
-    if (parseInt(qn) > sherlockData.length)
+    if (parseInt(qn) > round2Data.length)
       return res.status(409).json({
         message: "No more questions, Game Over!!",
       });
 
     //check if he/she is posting the answer for his/her current question
-    const currentQn = (await getSherlockCurrentQuestion(res.locals.teamId)) + 1;
+    const currentQn = (await getRound2CurrentQuestion(res.locals.teamId)) + 1;
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
         message:
@@ -164,47 +154,39 @@ export const submitSherlockRound1Answer = async (
       });
 
     //check if the question exists
-    if (!sherlockData[parseInt(qn) - 1])
+    if (!round2Data[parseInt(qn) - 1])
       return res.status(404).json({
         message: "Question not found!!",
       });
 
     //check if the answer is correct
-    if (compareAnswer(answer, sherlockData[parseInt(qn) - 1].answer)) {
+    if (compareAnswer(answer, round2Data[parseInt(qn) - 1].answer)) {
       //update his/her score by 10 points
-      await updateSherlockScore(res.locals.teamId, 10);
+      await updateRound2Score(res.locals.teamId, 10);
 
       //set the current answered question
-      await setSherlockCurrentQuestion(res.locals.teamId, parseInt(qn));
-
-      //check if it is the penultimate question
-      const isPenultimateQn = parseInt(qn) === sherlockData.length - 1;
-
-      if (isPenultimateQn) await setSherlockStatus(res.locals.teamId);
+      await setRound2CurrentQuestion(res.locals.teamId, parseInt(qn));
 
       //check if this is the last question
-      const isGameOver = parseInt(qn) === sherlockData.length;
+      const isGameOver = parseInt(qn) === round2Data.length;
 
       if (isGameOver) {
         //end the timer
-        await endSherlockTimer(res.locals.teamId);
+        await endRound2Timer(res.locals.teamId);
 
         //get his/her start and end time
-        const { sherlockStartTime, sherlockEndTime } = await getSherlockTiming(
+        const { round2StartTime, round2EndTime } = await getRound2Timing(
           res.locals.teamId
         );
 
-        const startTime = new Date(sherlockStartTime).getTime();
-        const endTime = new Date(sherlockEndTime).getTime();
+        const startTime = new Date(round2StartTime).getTime();
+        const endTime = new Date(round2EndTime).getTime();
 
         //time taken by sherlock to complete the game
         const { hours, minutes, seconds } = calculateTimeTaken(
           startTime,
           endTime
         );
-
-        //update the round1 score
-        await updateRound1ScoreBySherlock(res.locals.teamId);
 
         //update the team score
         await updateTeamScore(res.locals.teamId);
@@ -214,7 +196,7 @@ export const submitSherlockRound1Answer = async (
           remark: "Your score has been incremented by 10 points!!",
           gameover: isGameOver,
           time: {
-            time: `You have taken ${hours} hours, ${minutes} minutes, ${seconds} seconds to complete round 1 of the game`,
+            time: `You have taken ${hours} hours, ${minutes} minutes, ${seconds} seconds to complete round 2 of the game`,
             hours,
             minutes,
             seconds,
@@ -225,7 +207,6 @@ export const submitSherlockRound1Answer = async (
         message: "Correct Answer!!",
         remark: "Your score has been incremented by 10 points!!",
         gameover: isGameOver,
-        isPenultimateQn,
       });
     } else {
       return res.status(200).json({
