@@ -46,6 +46,27 @@ export const setWatsonCurrentQuestion = (
     .execute();
 };
 
+export const getRound2CurrentQuestion = async (teamId: string) => {
+  return (
+    await questionRepository
+      .createQueryBuilder("question")
+      .where("question.teamId = :teamId", { teamId })
+      .getOne()
+  ).round2CurrentQuestion;
+};
+
+export const setRound2CurrentQuestion = (
+  teamId: string,
+  questionId: number
+) => {
+  return questionRepository
+    .createQueryBuilder()
+    .update()
+    .set({ round2CurrentQuestion: questionId })
+    .where("teamId = :teamId", { teamId })
+    .execute();
+};
+
 export const setSherlockStatus = (teamId: string) => {
   return questionRepository
     .createQueryBuilder()
@@ -86,23 +107,92 @@ export const isWatsonCompleted = async (teamId: string) => {
   ).isWatsonCompleted;
 };
 
-export const getRound2CurrentQuestion = async (teamId: string) => {
+export const getSherlockRemainingAttempts = async (
+  teamId: string,
+  qn: number
+) => {
   return (
     await questionRepository
       .createQueryBuilder("question")
       .where("question.teamId = :teamId", { teamId })
       .getOne()
-  ).round2CurrentQuestion;
+  ).sherlockAttempts[`qn${qn}`];
 };
 
-export const setRound2CurrentQuestion = (
+export const setSherlockRemainingAttempts = async (
   teamId: string,
-  questionId: number
+  qn: number,
+  attemptsRemaining: number
 ) => {
-  return questionRepository
-    .createQueryBuilder()
-    .update()
-    .set({ round2CurrentQuestion: questionId })
-    .where("teamId = :teamId", { teamId })
-    .execute();
+  const question = await questionRepository.findOne({
+    where: {
+      team: {
+        id: teamId,
+      },
+    },
+  });
+  if (question) {
+    question.sherlockAttempts[`qn${qn}`] = attemptsRemaining;
+    await questionRepository.save(question);
+  }
+};
+
+export const getWatsonRemainingAttempts = async (
+  teamId: string,
+  qn: number
+) => {
+  return (
+    await questionRepository
+      .createQueryBuilder("question")
+      .where("question.teamId = :teamId", { teamId })
+      .getOne()
+  ).watsonAttempts[`qn${qn}`];
+};
+
+export const setWatsonRemainingAttempts = async (
+  teamId: string,
+  qn: number,
+  attemptsRemaining: number
+) => {
+  const question = await questionRepository.findOne({
+    where: {
+      team: {
+        id: teamId,
+      },
+    },
+  });
+  if (question) {
+    question.watsonAttempts[`qn${qn}`] = attemptsRemaining;
+    await questionRepository.save(question);
+  }
+};
+
+export const getRound2RemainingAttempts = async (
+  teamId: string,
+  qn: number
+) => {
+  return (
+    await questionRepository
+      .createQueryBuilder("question")
+      .where("question.teamId = :teamId", { teamId })
+      .getOne()
+  ).round2Attempts[`qn${qn}`];
+};
+
+export const setRound2RemainingAttempts = async (
+  teamId: string,
+  qn: number,
+  attemptsRemaining: number
+) => {
+  const question = await questionRepository.findOne({
+    where: {
+      team: {
+        id: teamId,
+      },
+    },
+  });
+  if (question) {
+    question.round2Attempts[`qn${qn}`] = attemptsRemaining;
+    await questionRepository.save(question);
+  }
 };

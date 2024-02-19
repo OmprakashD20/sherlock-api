@@ -18,11 +18,13 @@ import {
   getRound2CurrentQuestion,
   getRound2Timing,
   getSherlockCurrentQuestion,
+  getSherlockRemainingAttempts,
   getSherlockTiming,
   setLastClueUsedBySherlock,
   setLastClueUsedInRound2,
   setRound2CurrentQuestion,
   setSherlockCurrentQuestion,
+  setSherlockRemainingAttempts,
   setSherlockStatus,
   startRound2Timer,
   startSherlockTimer,
@@ -39,6 +41,18 @@ export const getSherlockRound1Question = async (
 ) => {
   try {
     const { qn } = req.params;
+
+    //check if he/she has exceeded the attempts
+    const attemptsRemaining = await getSherlockRemainingAttempts(
+      res.locals.teamId,
+      parseInt(qn)
+    );
+
+    if (attemptsRemaining === 0)
+      return res.status(403).json({
+        message:
+          "You have exceeded the maximum number of attempts for this question!!",
+      });
 
     //check if the game is over
     if (parseInt(qn) > sherlockData.length)
@@ -63,8 +77,14 @@ export const getSherlockRound1Question = async (
 
       const question = sherlockData[parseInt(qn) - 1].question;
 
+      const attemptsRemaining = await getSherlockRemainingAttempts(
+        res.locals.teamId,
+        parseInt(qn)
+      );
+
       return res.status(200).json({
         question,
+        attemptsRemaining,
         //todo: send the question type -> text, images, audio
         //todo: send the answer type -> text, images
       });
@@ -147,6 +167,18 @@ export const submitSherlockRound1Answer = async (
     const { qn } = req.params;
     const { answer } = req.body;
 
+    //check if he/she has exceeded the attempts
+    const attemptsRemaining = await getSherlockRemainingAttempts(
+      res.locals.teamId,
+      parseInt(qn)
+    );
+
+    if (attemptsRemaining === 0)
+      return res.status(403).json({
+        message:
+          "You have exceeded the maximum number of attempts for this question!!",
+      });
+
     //check if the game is over
     if (parseInt(qn) > sherlockData.length)
       return res.status(409).json({
@@ -228,9 +260,19 @@ export const submitSherlockRound1Answer = async (
         isPenultimateQn,
       });
     } else {
+      const attemptsRemaining = await getSherlockRemainingAttempts(
+        res.locals.teamId,
+        parseInt(qn)
+      );
+      await setSherlockRemainingAttempts(
+        res.locals.teamId,
+        parseInt(qn),
+        attemptsRemaining - 1
+      );
       return res.status(200).json({
         message: "Wrong Answer!!",
         remark: "Better luck next time!!",
+        attemptsRemaining: attemptsRemaining - 1,
       });
     }
   } catch (err) {

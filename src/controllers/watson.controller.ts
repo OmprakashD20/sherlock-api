@@ -14,9 +14,11 @@ import {
   endWatsonTimer,
   getLastClueUsedByWatson,
   getWatsonCurrentQuestion,
+  getWatsonRemainingAttempts,
   getWatsonTiming,
   setLastClueUsedByWatson,
   setWatsonCurrentQuestion,
+  setWatsonRemainingAttempts,
   setWatsonStatus,
   startWatsonTimer,
   updateRound1ScoreByWatson,
@@ -54,8 +56,14 @@ export const getWatsonRound1Question = async (
 
       const question = watsonData[parseInt(qn) - 1].question;
 
+      const attemptsRemaining = await getWatsonRemainingAttempts(
+        res.locals.teamId,
+        parseInt(qn)
+      );
+
       return res.status(200).json({
         question,
+        attemptsRemaining,
         //todo: send the question type -> text, images, audio
         //todo: send the answer type -> text, images
       });
@@ -78,6 +86,18 @@ export const getWatsonRound1Clue = async (
 ) => {
   try {
     const { qn } = req.params;
+
+    //check if he/she has exceeded the attempts
+    const attemptsRemaining = await getWatsonRemainingAttempts(
+      res.locals.teamId,
+      parseInt(qn)
+    );
+
+    if (attemptsRemaining === 0)
+      return res.status(403).json({
+        message:
+          "You have exceeded the maximum number of attempts for this question!!",
+      });
 
     //check if the game is over
     if (parseInt(qn) > watsonData.length)
@@ -138,6 +158,18 @@ export const submitWatsonRound1Answer = async (
     const { qn } = req.params;
     const { answer } = req.body;
 
+    //check if he/she has exceeded the attempts
+    const attemptsRemaining = await getWatsonRemainingAttempts(
+      res.locals.teamId,
+      parseInt(qn)
+    );
+
+    if (attemptsRemaining === 0)
+      return res.status(403).json({
+        message:
+          "You have exceeded the maximum number of attempts for this question!!",
+      });
+
     //check if the game is over
     if (parseInt(qn) > watsonData.length)
       return res.status(409).json({
@@ -169,12 +201,14 @@ export const submitWatsonRound1Answer = async (
       await setWatsonCurrentQuestion(res.locals.teamId, parseInt(qn));
 
       //check if it is the penultimate question
-      const isLastQnForWatson = parseInt(qn) === watsonData.length;
+      const isPenultimateQn = parseInt(qn) === watsonData.length - 1;
 
-      //this is to make sure that watson can attend only the first 9 questions, and the last question can only be answered by sherlock
-      if (isLastQnForWatson) {
-        await setWatsonStatus(res.locals.teamId);
+      if (isPenultimateQn) await setWatsonStatus(res.locals.teamId);
 
+      //check if this is the last question
+      const isGameOver = parseInt(qn) === watsonData.length;
+
+      if (isGameOver) {
         //end the timer
         await endWatsonTimer(res.locals.teamId);
 
@@ -198,7 +232,7 @@ export const submitWatsonRound1Answer = async (
         return res.status(200).json({
           message: "Correct Answer!!",
           remark: "Your score has been incremented by 10 points!!",
-          gameover: isLastQnForWatson,
+          gameover: isGameOver,
           time: {
             time: `You have taken ${hours} hours, ${minutes} minutes, ${seconds} seconds to complete round 1 of the game`,
             hours,
@@ -210,12 +244,23 @@ export const submitWatsonRound1Answer = async (
       return res.status(200).json({
         message: "Correct Answer!!",
         remark: "Your score has been incremented by 10 points!!",
-        isGameOver: isLastQnForWatson,
+        gameOver: isGameOver,
+        isPenultimateQn,
       });
     } else {
+      const attemptsRemaining = await getWatsonRemainingAttempts(
+        res.locals.teamId,
+        parseInt(qn)
+      );
+      await setWatsonRemainingAttempts(
+        res.locals.teamId,
+        parseInt(qn),
+        attemptsRemaining - 1
+      );
       return res.status(200).json({
         message: "Wrong Answer!!",
         remark: "Better luck next time!!",
+        attemptsRemaining: attemptsRemaining - 1,
       });
     }
   } catch (err) {

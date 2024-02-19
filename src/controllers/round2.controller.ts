@@ -22,6 +22,8 @@ import {
   updateTeamScore,
 } from "@/services";
 
+//todo: restrict the number of attempts for each question in round 2
+
 //round 2 controllers
 export const getRound2Question = async (
   req: Request<QnSchemaType, {}, {}>,
