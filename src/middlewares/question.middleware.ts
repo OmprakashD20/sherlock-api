@@ -20,10 +20,10 @@ export const checkSherlockLastQuestion = async (
     const currentQn = await getSherlockCurrentQuestion(res.locals.teamId);
     if (!isLastQuestion && currentQn === sherlockData.length - 1)
       return res.status(403).json({
-        message: `Your team mate, Watson hasn't reached ${
+        error: `Your team mate, Watson hasn't reached ${
           watsonData.length - 1
         }th question yet!!`,
-        remark: `Wait for his completion upto ${watsonData.length}th question!!`,
+        remark: `Wait for his completion upto ${watsonData.length - 1}th question!!`,
       });
     next();
   } catch (err) {
@@ -44,7 +44,7 @@ export const checkWatsonLastQuestion = async (
     const currentQn = await getWatsonCurrentQuestion(res.locals.teamId);
     if (!isLastQuestion && currentQn === watsonData.length - 1)
       return res.status(403).json({
-        message: `Your team mate, Sherlock hasn't reached ${
+        error: `Your team mate, Sherlock hasn't reached ${
           sherlockData.length - 1
         }th question yet!!`,
         remark: `Wait for his completion upto ${
@@ -69,7 +69,7 @@ export const checkRound1Cleared = async (
     const round1Status = await getRound1Status(res.locals.teamId);
     if (!round1Status)
       return res.status(403).json({
-        message: "You haven't selected for Round 2, Better luck next time",
+        error: "You haven't selected for Round 2, Better luck next time",
       });
     next();
   } catch (err) {

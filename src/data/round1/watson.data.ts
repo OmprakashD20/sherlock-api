@@ -25,4 +25,9 @@ export const watsonData: Question[] = [
     answer: "A Study in Scarlet",
     clue: "This fictional detective is known for his brilliant deductive reasoning and iconic deerstalker hat.",
   },
+  {
+    question: "Which novel features a character named Sherlock Holmes?",
+    answer: "A Study in Scarlet",
+    clue: "This fictional detective is known for his brilliant deductive reasoning and iconic deerstalker hat.",
+  },
 ];

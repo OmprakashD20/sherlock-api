@@ -21,7 +21,7 @@ export const verifySherlock = async (
 
     if (!sherlock) {
       return res.status(403).json({
-        message: "You are not the sherlock of your team.",
+        error: "You are not the sherlock of your team.",
       });
     }
     next();
@@ -44,7 +44,7 @@ export const verifyWatson = async (
 
     if (!watson) {
       return res.status(403).json({
-        message: "You are not the watson of your team.",
+        error: "You are not the watson of your team.",
       });
     }
     next();
@@ -81,7 +81,7 @@ export const restrictSecondUser = async (
       const isLoggedIn = await getLogInStatus(teamId);
       if (isLoggedIn && character !== "sherlock")
         return res.status(409).json({
-          message: "Oops! Looks like Watson is already in the game.",
+          error: "Oops! Looks like Watson is already in the game.",
         });
     }
 
@@ -89,7 +89,7 @@ export const restrictSecondUser = async (
       const isLoggedIn = await getLogInStatus(teamId);
       if (isLoggedIn && character !== "watson")
         return res.status(409).json({
-          message: "Oops! Looks like Sherlock is already in the game.",
+          error: "Oops! Looks like Sherlock is already in the game.",
         });
     }
 

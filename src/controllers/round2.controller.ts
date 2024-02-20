@@ -14,9 +14,11 @@ import {
   endRound2Timer,
   getLastClueUsedInRound2,
   getRound2CurrentQuestion,
+  getRound2RemainingAttempts,
   getRound2Timing,
   setLastClueUsedInRound2,
   setRound2CurrentQuestion,
+  setRound2RemainingAttempts,
   startRound2Timer,
   updateRound2Score,
   updateTeamScore,
@@ -32,17 +34,29 @@ export const getRound2Question = async (
   try {
     const { qn } = req.params;
 
+    //check if he/she has exceeded the attempts
+    const attemptsRemaining = await getRound2RemainingAttempts(
+      res.locals.teamId,
+      parseInt(qn)
+    );
+
+    if (attemptsRemaining === 0)
+      return res.status(403).json({
+        error:
+          "You have exceeded the maximum number of attempts for this question!!",
+      });
+
     //check if the game is over
     if (parseInt(qn) > round2Data.length)
       return res.status(409).json({
-        message: "No more questions, Game Over!!",
+        error: "No more questions, Game Over!!",
       });
 
     //check if he/she is requesting the question in correct sequence
     const currentQn = (await getRound2CurrentQuestion(res.locals.teamId)) + 1;
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
-        message:
+        error:
           currentQn > parseInt(qn)
             ? "You have already attempted this question!!"
             : "You can only attempt questions in sequence!!",
@@ -63,7 +77,7 @@ export const getRound2Question = async (
     }
 
     return res.status(404).json({
-      message: "Question not found!!",
+      error: "Question not found!!",
     });
   } catch (err) {
     console.error(err);
@@ -80,21 +94,33 @@ export const getRound2Clue = async (
   try {
     const { qn } = req.params;
 
+    //check if he/she has exceeded the attempts
+    const attemptsRemaining = await getRound2RemainingAttempts(
+      res.locals.teamId,
+      parseInt(qn)
+    );
+
+    if (attemptsRemaining === 0)
+      return res.status(403).json({
+        error:
+          "You have exceeded the maximum number of attempts for this question!!",
+      });
+
     //check if the game is over
     if (parseInt(qn) > round2Data.length)
       return res.status(409).json({
-        message: "No more questions, Game Over!!",
+        error: "No more questions, Game Over!!",
       });
 
     //check if the question number is valid
     if (!round2Data[parseInt(qn) - 1])
-      return res.status(404).json({ message: "Question not found!!" });
+      return res.status(404).json({ error: "Question not found!!" });
 
     //check if he/she is requesting the clue for the current question
     const currentQn = (await getRound2CurrentQuestion(res.locals.teamId)) + 1;
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
-        message: "You can only request clue for the current question!!",
+        error: "You can only request clue for the current question!!",
       });
 
     //get the last clue used in round 2
@@ -105,7 +131,7 @@ export const getRound2Clue = async (
     //check if the clue has already been used
     if (parseInt(qn) === lastClueUsedInRound2)
       return res.status(410).json({
-        message: "Clue has already been used for this question!!",
+        error: "Clue has already been used for this question!!",
       });
 
     //get the clue
@@ -139,17 +165,29 @@ export const submitRound2Answer = async (
     const { qn } = req.params;
     const { answer } = req.body;
 
+    //check if he/she has exceeded the attempts
+    const attemptsRemaining = await getRound2RemainingAttempts(
+      res.locals.teamId,
+      parseInt(qn)
+    );
+
+    if (attemptsRemaining === 0)
+      return res.status(403).json({
+        error:
+          "You have exceeded the maximum number of attempts for this question!!",
+      });
+
     //check if the game is over
     if (parseInt(qn) > round2Data.length)
       return res.status(409).json({
-        message: "No more questions, Game Over!!",
+        error: "No more questions, Game Over!!",
       });
 
     //check if he/she is posting the answer for his/her current question
     const currentQn = (await getRound2CurrentQuestion(res.locals.teamId)) + 1;
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
-        message:
+        error:
           currentQn > parseInt(qn)
             ? "You have already answered this question!!"
             : "You can only answer the questions in sequence!!",
@@ -158,7 +196,7 @@ export const submitRound2Answer = async (
     //check if the question exists
     if (!round2Data[parseInt(qn) - 1])
       return res.status(404).json({
-        message: "Question not found!!",
+        error: "Question not found!!",
       });
 
     //check if the answer is correct
@@ -211,9 +249,24 @@ export const submitRound2Answer = async (
         gameover: isGameOver,
       });
     } else {
+      const attemptsRemaining = await getRound2RemainingAttempts(
+        res.locals.teamId,
+        parseInt(qn)
+      );
+      await setRound2RemainingAttempts(
+        res.locals.teamId,
+        parseInt(qn),
+        attemptsRemaining - 1
+      );
+
+      //skip the current question if he/she has reached the maximum attempts
+      if (attemptsRemaining - 1 === 0) {
+        await setRound2CurrentQuestion(res.locals.teamId, parseInt(qn));
+      }
       return res.status(200).json({
-        message: "Wrong Answer!!",
+        error: "Wrong Answer!!",
         remark: "Better luck next time!!",
+        attemptsRemaining: attemptsRemaining - 1,
       });
     }
   } catch (err) {

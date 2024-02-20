@@ -30,14 +30,14 @@ export const verifyToken = async (
   try {
     if (!token)
       return res.status(401).json({
-        message: "No token found, authorization denied.",
+        error: "No token found, authorization denied.",
       });
 
     let payload = verifyJWT(token) as JwtPayload;
 
     if (!payload)
       return res.status(401).json({
-        message: "Token verification failed, authorization denied.",
+        error: "Token verification failed, authorization denied.",
       });
 
     res.locals.teamId = payload.teamId;

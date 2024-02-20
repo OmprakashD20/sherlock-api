@@ -36,14 +36,14 @@ export const getWatsonRound1Question = async (
     //check if the game is over
     if (parseInt(qn) > watsonData.length)
       return res.status(409).json({
-        message: "No more questions, Game Over!!",
+        error: "No more questions, Game Over!!",
       });
 
     //check if he/she is requesting the question in correct sequence
     const currentQn = (await getWatsonCurrentQuestion(res.locals.teamId)) + 1;
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
-        message:
+        error:
           currentQn > parseInt(qn)
             ? "You have already attempted this question!!"
             : "You can only attempt questions in sequence!!",
@@ -70,7 +70,7 @@ export const getWatsonRound1Question = async (
     }
 
     return res.status(404).json({
-      message: "Question not found!!",
+      error: "Question not found!!",
     });
   } catch (err) {
     console.error(err);
@@ -95,25 +95,25 @@ export const getWatsonRound1Clue = async (
 
     if (attemptsRemaining === 0)
       return res.status(403).json({
-        message:
+        error:
           "You have exceeded the maximum number of attempts for this question!!",
       });
 
     //check if the game is over
     if (parseInt(qn) > watsonData.length)
       return res.status(409).json({
-        message: "No more questions, Game Over!!",
+        error: "No more questions, Game Over!!",
       });
 
     //check if the question number is valid
     if (!watsonData[parseInt(qn) - 1])
-      return res.status(404).json({ message: "Question not found!!" });
+      return res.status(404).json({ error: "Question not found!!" });
 
     //check if he/she is requesting the clue for the current question
     const currentQn = (await getWatsonCurrentQuestion(res.locals.teamId)) + 1;
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
-        message: "You can only request clue for the current question!!",
+        error: "You can only request clue for the current question!!",
       });
 
     //get the last clue used by watson
@@ -124,7 +124,7 @@ export const getWatsonRound1Clue = async (
     //check if the clue has already been used
     if (parseInt(qn) === lastClueUsedByWatson)
       return res.status(410).json({
-        message: "Clue has already been used for this question!!",
+        error: "Clue has already been used for this question!!",
       });
 
     //get the clue
@@ -166,21 +166,21 @@ export const submitWatsonRound1Answer = async (
 
     if (attemptsRemaining === 0)
       return res.status(403).json({
-        message:
+        error:
           "You have exceeded the maximum number of attempts for this question!!",
       });
 
     //check if the game is over
     if (parseInt(qn) > watsonData.length)
       return res.status(409).json({
-        message: "No more questions, Game Over!!",
+        error: "No more questions, Game Over!!",
       });
 
     //check if he/she is posting the answer for his/her current question
     const currentQn = (await getWatsonCurrentQuestion(res.locals.teamId)) + 1;
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
-        message:
+        error:
           currentQn > parseInt(qn)
             ? "You have already answered this question!!"
             : "You can only answer the questions in sequence!!",
@@ -189,7 +189,7 @@ export const submitWatsonRound1Answer = async (
     //check if the question exists
     if (!watsonData[parseInt(qn) - 1])
       return res.status(404).json({
-        message: "Question not found!!",
+        error: "Question not found!!",
       });
 
     //check if the answer is correct
@@ -257,8 +257,13 @@ export const submitWatsonRound1Answer = async (
         parseInt(qn),
         attemptsRemaining - 1
       );
+
+      //skip the current question if he/she has reached the maximum attempts
+      if (attemptsRemaining - 1 === 0) {
+        await setWatsonCurrentQuestion(res.locals.teamId, parseInt(qn));
+      }
       return res.status(200).json({
-        message: "Wrong Answer!!",
+        error: "Wrong Answer!!",
         remark: "Better luck next time!!",
         attemptsRemaining: attemptsRemaining - 1,
       });

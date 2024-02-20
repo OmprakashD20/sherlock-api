@@ -10,13 +10,13 @@ export class Question extends Base {
   @Column({ default: false })
   isWatsonCompleted: boolean;
 
-  @Column({ nullable: true })
+  @Column({ default: 0 })
   sherlockCurrentQuestion: number;
 
-  @Column({ nullable: true })
+  @Column({ default: 0 })
   watsonCurrentQuestion: number;
 
-  @Column({ nullable: true })
+  @Column({ default: 0 })
   round2CurrentQuestion: number;
 
   @Column("simple-json")

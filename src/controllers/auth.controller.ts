@@ -8,6 +8,8 @@ import { SignInSchemaType, SignUpSchemaType } from "@/validators";
 import {
   createNewTeam,
   findTeamByName,
+  getSherlockCurrentQuestion,
+  getWatsonCurrentQuestion,
   setLogInStatus,
 } from "@/services";
 
@@ -104,6 +106,13 @@ export const signInController = async (
     //create JWT
     const token = createJWT(kid, team.id, email);
 
+    let currentQn = 1;
+
+    if (character === "sherlock")
+      currentQn = await getSherlockCurrentQuestion(team.id);
+    if (character === "watson")
+      currentQn = await getWatsonCurrentQuestion(team.id);
+
     res.status(200).json({
       message: "Login successful!!",
       token,
@@ -111,6 +120,7 @@ export const signInController = async (
       character,
       email,
       kid,
+      currentQn,
     });
   } catch (err) {
     console.error(err);
