@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 //data
-import { sherlockData, round2Data } from "@/data";
+import { sherlockData } from "@/data";
 
 //utils
 import { calculateTimeTaken, compareAnswer } from "@/utils";
@@ -11,25 +11,17 @@ import {
   QnSchemaType,
 } from "@/validators/team.validator";
 import {
-  endRound2Timer,
   endSherlockTimer,
   getLastClueUsedBySherlock,
-  getLastClueUsedInRound2,
-  getRound2CurrentQuestion,
-  getRound2Timing,
   getSherlockCurrentQuestion,
   getSherlockRemainingAttempts,
   getSherlockTiming,
   setLastClueUsedBySherlock,
-  setLastClueUsedInRound2,
-  setRound2CurrentQuestion,
   setSherlockCurrentQuestion,
   setSherlockRemainingAttempts,
   setSherlockStatus,
-  startRound2Timer,
   startSherlockTimer,
   updateRound1ScoreBySherlock,
-  updateRound2Score,
   updateSherlockScore,
   updateTeamScore,
 } from "@/services";

@@ -27,6 +27,7 @@ export const getTeamDetails = async (req: Request, res: Response) => {
       name: team.name,
       sherlock: team.sherlock,
       watson: team.watson,
+      isRound1Completed: team.round1Cleared,
       sherlockScore: scores.sherlockScore,
       watsonScore: scores.watsonScore,
       round1Score: scores.round1Score,
