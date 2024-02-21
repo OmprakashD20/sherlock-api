@@ -32,7 +32,10 @@ export const getRound2Status = async (teamId: string) => {
   return team.character;
 };
 
-export const setRound2Status = async (teamId: string, character: string | null) => {
+export const setRound2Status = async (
+  teamId: string,
+  character: string | null
+) => {
   return teamRepository
     .createQueryBuilder()
     .update()

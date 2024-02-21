@@ -263,7 +263,7 @@ export const submitRound2Answer = async (
       if (attemptsRemaining - 1 === 0) {
         await setRound2CurrentQuestion(res.locals.teamId, parseInt(qn));
       }
-      return res.status(200).json({
+      return res.status(400).json({
         error: "Wrong Answer!!",
         remark: "Better luck next time!!",
         attemptsRemaining: attemptsRemaining - 1,

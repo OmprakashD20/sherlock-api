@@ -3,12 +3,50 @@ import { Request, Response } from "express";
 //services
 import {
   findTeamById,
+  getCharacter,
   getLeaderboardDetails,
   getScoresByTeamId,
+  getSherlockCurrentQuestion,
+  getWatsonCurrentQuestion,
 } from "@/services";
 
 //models
 import { Team } from "@/models";
+
+export const getCharacterDetails = async (req: Request, res: Response) => {
+  try {
+    const team = await findTeamById(res.locals.teamId);
+    const { isSherlock, isWatson } = await getCharacter(
+      res.locals.kid,
+      res.locals.teamId
+    );
+    if (isSherlock) {
+      const currentQn = await getSherlockCurrentQuestion(res.locals.teamId);
+      return res.status(200).json({
+        name: team.name,
+        character: "sherlock",
+        sherlock: team.sherlock,
+        watson: team.watson,
+        currentQn,
+      });
+    }
+    if (isWatson) {
+      const currentQn = await getWatsonCurrentQuestion(res.locals.teamId);
+      return res.status(200).json({
+        name: team.name,
+        character: "watson",
+        sherlock: team.sherlock,
+        watson: team.watson,
+        currentQn,
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Internal Server Error!!",
+    });
+  }
+};
 
 export const getTeamDetails = async (req: Request, res: Response) => {
   try {
