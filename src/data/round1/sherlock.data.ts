@@ -12,30 +12,33 @@ export const sherlockData: Question[] = [
     asset: [
       "https://drive.google.com/file/d/1NkF1zdFTHfFax184ZyjI3Tr2Wg61WBPJ/view?usp=drive_link",
     ],
-    answer: "Some one wants you dead",
+    answer: "Someone wants you dead",
     clue: "Answer is hidden across words similar to the joke made in Nanban by Vijay to Sathyaraj.",
   },
   {
     question:
       "Knowing that his life is targeted with Irene as the bait, Sherlock decides to do something about it. He entrusts Enola Holmes to find a solution to it, and she finds one. But being a child, she is being playful and asks for Sherlock to solve a puzzle. Find 'ABCDEFGHIJ'.",
-    asset:
-      ["https://drive.google.com/file/d/1_ET-jy31JYN_Tl66FJpQKr2hDOjoD5N7/view?usp=drive_link"],
+    asset: [
+      "https://drive.google.com/file/d/1_ET-jy31JYN_Tl66FJpQKr2hDOjoD5N7/view?usp=drive_link",
+    ],
     answer: "2653135165",
     clue: "SUDOKU",
   },
   {
     question:
       "The next day Sherlock is visited by Irene at his house. IRENE: 'To me disguise was always a self-potrait. But this? This is more intimate. This is my heart! (Faints on Sherlock's hand where Sherlock notices it's a ruse to pass her Phone to Sherlock with a note that reads 'Openit'.)",
-    asset:
-      ["https://drive.google.com/file/d/1kvk0Dfpy7uVvt789wuIz8zIUHjT6T8Bt/view?usp=drive_link"],
+    asset: [
+      "https://drive.google.com/file/d/1kvk0Dfpy7uVvt789wuIz8zIUHjT6T8Bt/view?usp=drive_link",
+    ],
     answer: "SHER",
     clue: "It's about you!",
   },
   {
     question:
       "The Phone's messenger provides a photo which reveals a blackmail order intercepted by a Hacker helping Irene but not fully decrypted. Decrypt the data.",
-    asset:
-      ["https://drive.google.com/file/d/1SccJcpldnH1ATX1Qlx9kWm6G9_0A9-xL/view?usp=drive_link"],
+    asset: [
+      "https://drive.google.com/file/d/1SccJcpldnH1ATX1Qlx9kWm6G9_0A9-xL/view?usp=drive_link",
+    ],
     answer: "BOTULINUM TOXIN",
     clue: "Poison that blocks the release of Acetylcholine.",
   },

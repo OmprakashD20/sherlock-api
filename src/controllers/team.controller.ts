@@ -27,7 +27,7 @@ export const getCharacterDetails = async (req: Request, res: Response) => {
         character: "sherlock",
         sherlock: team.sherlock,
         watson: team.watson,
-        currentQn,
+        currentQn: currentQn + 1 || 1,
       });
     }
     if (isWatson) {
@@ -37,7 +37,7 @@ export const getCharacterDetails = async (req: Request, res: Response) => {
         character: "watson",
         sherlock: team.sherlock,
         watson: team.watson,
-        currentQn,
+        currentQn: currentQn + 1 || 1,
       });
     }
   } catch (err) {
