@@ -22,6 +22,7 @@ import {
   setWatsonStatus,
   startWatsonTimer,
   updateRound1ScoreByWatson,
+  updateTeamScore,
   updateWatsonScore,
 } from "@/services";
 
@@ -262,6 +263,52 @@ export const submitWatsonRound1Answer = async (
       if (attemptsRemaining - 1 === 0) {
         await setWatsonCurrentQuestion(res.locals.teamId, parseInt(qn));
       }
+
+      //check if it is the penultimate question
+      const isPenultimateQn = parseInt(qn) === watsonData.length - 1;
+
+      if (isPenultimateQn) await setWatsonStatus(res.locals.teamId);
+
+      //check if this is the last question
+      const isGameOver = parseInt(qn) === watsonData.length;
+
+      if (isGameOver) {
+        //end the timer
+        await endWatsonTimer(res.locals.teamId);
+
+        //get his/her start and end time
+        const { watsonStartTime, watsonEndTime } = await getWatsonTiming(
+          res.locals.teamId
+        );
+
+        const startTime = new Date(watsonStartTime).getTime();
+        const endTime = new Date(watsonEndTime).getTime();
+
+        //time taken by watson to complete the game
+        const { hours, minutes, seconds } = calculateTimeTaken(
+          startTime,
+          endTime
+        );
+
+        //update the round1 score
+        await updateRound1ScoreByWatson(res.locals.teamId);
+
+        //update the team score
+        await updateTeamScore(res.locals.teamId);
+
+        return res.status(400).json({
+          error: "Wrong Answer!!",
+          remark: "Better luck next time!!",
+          gameover: isGameOver,
+          time: {
+            time: `You have taken ${hours} hours, ${minutes} minutes, ${seconds} seconds to complete round 1 of the game`,
+            hours,
+            minutes,
+            seconds,
+          },
+        });
+      }
+
       return res.status(400).json({
         error: "Wrong Answer!!",
         remark: "Better luck next time!!",

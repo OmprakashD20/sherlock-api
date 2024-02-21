@@ -216,6 +216,8 @@ export const submitSherlockRound1Answer = async (
       //check if it is the penultimate question
       const isPenultimateQn = parseInt(qn) === sherlockData.length - 1;
 
+      console.log(isPenultimateQn, parseInt(qn), sherlockData.length - 1);
+
       if (isPenultimateQn) await setSherlockStatus(res.locals.teamId);
 
       //check if this is the last question
@@ -278,6 +280,52 @@ export const submitSherlockRound1Answer = async (
       if (attemptsRemaining - 1 === 0) {
         await setSherlockCurrentQuestion(res.locals.teamId, parseInt(qn));
       }
+
+      //check if it is the penultimate question
+      const isPenultimateQn = parseInt(qn) === sherlockData.length - 1;
+
+      if (isPenultimateQn) await setSherlockStatus(res.locals.teamId);
+
+      //check if this is the last question
+      const isGameOver = parseInt(qn) === sherlockData.length;
+
+      if (isGameOver && attemptsRemaining - 1 === 0) {
+        //end the timer
+        await endSherlockTimer(res.locals.teamId);
+
+        //get his/her start and end time
+        const { sherlockStartTime, sherlockEndTime } = await getSherlockTiming(
+          res.locals.teamId
+        );
+
+        const startTime = new Date(sherlockStartTime).getTime();
+        const endTime = new Date(sherlockEndTime).getTime();
+
+        //time taken by sherlock to complete the game
+        const { hours, minutes, seconds } = calculateTimeTaken(
+          startTime,
+          endTime
+        );
+
+        //update the round1 score
+        await updateRound1ScoreBySherlock(res.locals.teamId);
+
+        //update the team score
+        await updateTeamScore(res.locals.teamId);
+
+        return res.status(400).json({
+          error: "Wrong Answer!!",
+          remark: "Better luck next time!!",
+          gameover: isGameOver,
+          time: {
+            time: `You have taken ${hours} hours, ${minutes} minutes, ${seconds} seconds to complete round 1 of the game`,
+            hours,
+            minutes,
+            seconds,
+          },
+        });
+      }
+
       return res.status(400).json({
         error: "Wrong Answer!!",
         remark: "Better luck next time!!",

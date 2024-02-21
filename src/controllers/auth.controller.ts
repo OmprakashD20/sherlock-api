@@ -120,7 +120,7 @@ export const signInController = async (
       character,
       email,
       kid,
-      currentQn: currentQn || 1,
+      currentQn: currentQn + 1,
     });
   } catch (err) {
     console.error(err);

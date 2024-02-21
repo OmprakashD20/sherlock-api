@@ -56,3 +56,12 @@ export const SignInSchema = z.object({
 });
 
 export type SignInSchemaType = z.TypeOf<typeof SignInSchema>["body"];
+
+//schema for validating the request body of /team/character endpoint
+export const CharacterSchema = z.object({
+  body: z.object({
+    character: z.enum(["sherlock", "watson"]),
+  }),
+});
+
+export type CharacterSchemaType = z.TypeOf<typeof CharacterSchema>["body"];

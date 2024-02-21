@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 //services
 import {
   findTeamById,
-  getCharacter,
   getLeaderboardDetails,
   getScoresByTeamId,
   getSherlockCurrentQuestion,
@@ -12,32 +11,33 @@ import {
 
 //models
 import { Team } from "@/models";
+import { CharacterSchemaType } from "@/validators";
 
-export const getCharacterDetails = async (req: Request, res: Response) => {
+export const getCharacterDetails = async (
+  req: Request<{}, {}, CharacterSchemaType>,
+  res: Response
+) => {
   try {
+    const { character } = req.body;
     const team = await findTeamById(res.locals.teamId);
-    const { isSherlock, isWatson } = await getCharacter(
-      res.locals.kid,
-      res.locals.teamId
-    );
-    if (isSherlock) {
+    if (character === "sherlock") {
       const currentQn = await getSherlockCurrentQuestion(res.locals.teamId);
       return res.status(200).json({
         name: team.name,
         character: "sherlock",
         sherlock: team.sherlock,
         watson: team.watson,
-        currentQn: currentQn + 1 || 1,
+        currentQn: currentQn + 1,
       });
     }
-    if (isWatson) {
+    if (character === "watson") {
       const currentQn = await getWatsonCurrentQuestion(res.locals.teamId);
       return res.status(200).json({
         name: team.name,
         character: "watson",
         sherlock: team.sherlock,
         watson: team.watson,
-        currentQn: currentQn + 1 || 1,
+        currentQn: currentQn + 1,
       });
     }
   } catch (err) {
