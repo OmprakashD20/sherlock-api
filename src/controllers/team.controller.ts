@@ -14,11 +14,11 @@ import { Team } from "@/models";
 import { CharacterSchemaType } from "@/validators";
 
 export const getCharacterDetails = async (
-  req: Request<{}, {}, CharacterSchemaType>,
+  req: Request<{}, {}, {}, CharacterSchemaType>,
   res: Response
 ) => {
   try {
-    const { character } = req.body;
+    const { character } = req.query;
     const team = await findTeamById(res.locals.teamId);
     if (character === "sherlock") {
       const currentQn = await getSherlockCurrentQuestion(res.locals.teamId);
