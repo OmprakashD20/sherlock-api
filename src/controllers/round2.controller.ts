@@ -16,6 +16,7 @@ import {
   getRound2CurrentQuestion,
   getRound2RemainingAttempts,
   getRound2Timing,
+  isRound2TimerStarted,
   setLastClueUsedInRound2,
   setRound2CurrentQuestion,
   setRound2RemainingAttempts,
@@ -24,7 +25,7 @@ import {
   updateTeamScore,
 } from "@/services";
 
-//todo: restrict the number of attempts for each question in round 2
+//todo: add round 2 questions
 
 //round 2 controllers
 export const getRound2Question = async (
@@ -65,14 +66,19 @@ export const getRound2Question = async (
     //check if the question number is valid
     if (round2Data[parseInt(qn) - 1]) {
       //start the timer if it is the first question
-      if (parseInt(qn) === 1) await startRound2Timer(res.locals.teamId);
+      if (parseInt(qn) === 1 && !isRound2TimerStarted(res.locals.teamId))
+        await startRound2Timer(res.locals.teamId);
 
       const question = round2Data[parseInt(qn) - 1].question;
 
+      const attemptsRemaining = await getRound2RemainingAttempts(
+        res.locals.teamId,
+        parseInt(qn)
+      );
+
       return res.status(200).json({
         question,
-        //todo: send the question type -> text, images, audio
-        //todo: send the answer type -> text, images
+        attemptsRemaining,
       });
     }
 

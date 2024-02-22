@@ -57,8 +57,6 @@ export const getTeamDetails = async (req: Request, res: Response) => {
         message: "Team doesn't exists",
       });
 
-    //todo: fetch team members details from k! api
-
     const scores = await getScoresByTeamId(res.locals.teamId);
 
     res.status(200).json({

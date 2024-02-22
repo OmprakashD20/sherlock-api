@@ -22,6 +22,15 @@ export const endSherlockTimer = (teamId: string) => {
     .execute();
 };
 
+export const isSherlockTimerStarted = async (teamId: string) => {
+  const timings: Time = await timeRepository
+    .createQueryBuilder("time")
+    .where("time.teamId = :teamId", { teamId })
+    .getOne();
+
+  return timings.sherlockStartTime !== null;
+};
+
 export const startWatsonTimer = (teamId: string) => {
   return timeRepository
     .createQueryBuilder()
@@ -38,6 +47,15 @@ export const endWatsonTimer = (teamId: string) => {
     .set({ watsonEndTime: new Date() })
     .where("teamId = :teamId", { teamId })
     .execute();
+};
+
+export const isWatsonTimerStarted = async (teamId: string) => {
+  const timings: Time = await timeRepository
+    .createQueryBuilder("time")
+    .where("time.teamId = :teamId", { teamId })
+    .getOne();
+
+  return timings.watsonStartTime !== null;
 };
 
 export const getSherlockTiming = async (teamId: string) => {
@@ -80,6 +98,15 @@ export const endRound2Timer = (teamId: string) => {
     .set({ round2EndTime: new Date() })
     .where("teamId = :teamId", { teamId })
     .execute();
+};
+
+export const isRound2TimerStarted = async (teamId: string) => {
+  const timings: Time = await timeRepository
+    .createQueryBuilder("time")
+    .where("time.teamId = :teamId", { teamId })
+    .getOne();
+
+  return timings.round2StartTime !== null;
 };
 
 export const getRound2Timing = async (teamId: string) => {

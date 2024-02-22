@@ -16,6 +16,7 @@ import {
   getWatsonCurrentQuestion,
   getWatsonRemainingAttempts,
   getWatsonTiming,
+  isWatsonTimerStarted,
   setLastClueUsedByWatson,
   setWatsonCurrentQuestion,
   setWatsonRemainingAttempts,
@@ -53,9 +54,10 @@ export const getWatsonRound1Question = async (
     //check if the question number is valid
     if (watsonData[parseInt(qn) - 1]) {
       //start the timer if it is the first question
-      if (parseInt(qn) === 1) await startWatsonTimer(res.locals.teamId);
+      if (parseInt(qn) === 1 && !isWatsonTimerStarted(res.locals.teamId))
+        await startWatsonTimer(res.locals.teamId);
 
-      const question = watsonData[parseInt(qn) - 1].question;
+      const question = watsonData[parseInt(qn) - 1];
 
       const attemptsRemaining = await getWatsonRemainingAttempts(
         res.locals.teamId,
@@ -63,10 +65,9 @@ export const getWatsonRound1Question = async (
       );
 
       return res.status(200).json({
-        question,
+        question: question.question,
         attemptsRemaining,
-        //todo: send the question type -> text, images, audio
-        //todo: send the answer type -> text, images
+        assets: question.asset,
       });
     }
 
@@ -204,12 +205,12 @@ export const submitWatsonRound1Answer = async (
       //check if it is the penultimate question
       const isPenultimateQn = parseInt(qn) === watsonData.length - 1;
 
-      if (isPenultimateQn) await setWatsonStatus(res.locals.teamId);
-
       //check if this is the last question
       const isGameOver = parseInt(qn) === watsonData.length;
 
-      if (isGameOver) {
+      if (isPenultimateQn) {
+        await setWatsonStatus(res.locals.teamId);
+
         //end the timer
         await endWatsonTimer(res.locals.teamId);
 
@@ -242,6 +243,7 @@ export const submitWatsonRound1Answer = async (
           },
         });
       }
+
       return res.status(200).json({
         message: "Correct Answer!!",
         remark: "Your score has been incremented by 10 points!!",
@@ -267,12 +269,12 @@ export const submitWatsonRound1Answer = async (
       //check if it is the penultimate question
       const isPenultimateQn = parseInt(qn) === watsonData.length - 1;
 
-      if (isPenultimateQn) await setWatsonStatus(res.locals.teamId);
-
       //check if this is the last question
       const isGameOver = parseInt(qn) === watsonData.length;
 
-      if (isGameOver) {
+      if (isPenultimateQn) {
+        await setWatsonStatus(res.locals.teamId);
+
         //end the timer
         await endWatsonTimer(res.locals.teamId);
 

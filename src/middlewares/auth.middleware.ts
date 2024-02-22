@@ -3,23 +3,6 @@ import { JwtPayload } from "jsonwebtoken";
 
 import { verifyJWT } from "@/utils";
 
-//verify k!24 user middleware
-export const verifyKUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    //todo: check if the user's kid and email matches the one in the k! 24 database
-    next();
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      error: "Internal server error!!",
-    });
-  }
-};
-
 //auth middleware
 export const verifyToken = async (
   req: Request,

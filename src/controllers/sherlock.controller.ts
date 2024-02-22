@@ -16,15 +16,18 @@ import {
   getSherlockCurrentQuestion,
   getSherlockRemainingAttempts,
   getSherlockTiming,
+  isSherlockTimerStarted,
   setLastClueUsedBySherlock,
   setSherlockCurrentQuestion,
   setSherlockRemainingAttempts,
   setSherlockStatus,
+  setWatsonCurrentQuestion,
   startSherlockTimer,
   updateRound1ScoreBySherlock,
   updateSherlockScore,
   updateTeamScore,
 } from "@/services";
+import { parse } from "path";
 
 //sherlock round 1 controllers
 export const getSherlockRound1Question = async (
@@ -65,9 +68,10 @@ export const getSherlockRound1Question = async (
     //check if the question number is valid
     if (sherlockData[parseInt(qn) - 1]) {
       //start the timer if it is the first question
-      if (parseInt(qn) === 1) await startSherlockTimer(res.locals.teamId);
+      if (parseInt(qn) === 1 && !isSherlockTimerStarted(res.locals.teamId))
+        await startSherlockTimer(res.locals.teamId);
 
-      const question = sherlockData[parseInt(qn) - 1].question;
+      const question = sherlockData[parseInt(qn) - 1];
 
       const attemptsRemaining = await getSherlockRemainingAttempts(
         res.locals.teamId,
@@ -75,10 +79,9 @@ export const getSherlockRound1Question = async (
       );
 
       return res.status(200).json({
-        question,
+        question: question.question,
         attemptsRemaining,
-        //todo: send the question type -> text, images, audio
-        //todo: send the answer type -> text, images
+        assets: question.asset,
       });
     }
 
@@ -216,8 +219,6 @@ export const submitSherlockRound1Answer = async (
       //check if it is the penultimate question
       const isPenultimateQn = parseInt(qn) === sherlockData.length - 1;
 
-      console.log(isPenultimateQn, parseInt(qn), sherlockData.length - 1);
-
       if (isPenultimateQn) await setSherlockStatus(res.locals.teamId);
 
       //check if this is the last question
@@ -226,6 +227,9 @@ export const submitSherlockRound1Answer = async (
       if (isGameOver) {
         //end the timer
         await endSherlockTimer(res.locals.teamId);
+
+        //set the current answered question for watson as the last question
+        await setWatsonCurrentQuestion(res.locals.teamId, parseInt(qn));
 
         //get his/her start and end time
         const { sherlockStartTime, sherlockEndTime } = await getSherlockTiming(
@@ -292,6 +296,9 @@ export const submitSherlockRound1Answer = async (
       if (isGameOver && attemptsRemaining - 1 === 0) {
         //end the timer
         await endSherlockTimer(res.locals.teamId);
+
+        //set the current answered question for watson as the last question
+        await setWatsonCurrentQuestion(res.locals.teamId, parseInt(qn));
 
         //get his/her start and end time
         const { sherlockStartTime, sherlockEndTime } = await getSherlockTiming(
