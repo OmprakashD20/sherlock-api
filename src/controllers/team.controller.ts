@@ -113,6 +113,8 @@ export const getRound1Leaderboard = async (req: Request, res: Response) => {
       }
       return b.score.round1Score - a.score.round1Score;
     });
+    const position = data.findIndex((team) => team.id === res.locals.teamId);
+    const totalTeams = data.length;
     let result = data.map((team, index) => {
       if (
         !team.time.sherlockStartTime ||
@@ -168,7 +170,11 @@ export const getRound1Leaderboard = async (req: Request, res: Response) => {
         timeTaken: teamTime,
       };
     });
-    res.status(200).json(result);
+    res.status(200).json({
+      position: position + 1,
+      totalTeams,
+      data: result,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -177,6 +183,7 @@ export const getRound1Leaderboard = async (req: Request, res: Response) => {
   }
 };
 
+//todo: add time taken for round 2
 export const getRound2Leaderboard = async (req: Request, res: Response) => {
   try {
     let data: Team[] = await getLeaderboardDetails();

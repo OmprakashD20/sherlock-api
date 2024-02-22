@@ -64,6 +64,8 @@ export const restrictSecondUser = async (
   try {
     const teamId = res.locals.teamId;
 
+    //fix: get the character of the user from the req params
+
     //check if a user has already logged in
     const { isSherlock, isWatson } = await getCharacter(res.locals.kid, teamId);
 
