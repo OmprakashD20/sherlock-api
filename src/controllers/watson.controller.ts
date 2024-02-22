@@ -67,7 +67,10 @@ export const getWatsonRound1Question = async (
     //check if the question number is valid
     if (watsonData[parseInt(qn) - 1]) {
       //start the timer if it is the first question
-      if (parseInt(qn) === 1 && !isWatsonTimerStarted(res.locals.teamId))
+      if (
+        parseInt(qn) === 1 &&
+        !(await isWatsonTimerStarted(res.locals.teamId))
+      )
         await startWatsonTimer(res.locals.teamId);
 
       const question = watsonData[parseInt(qn) - 1];

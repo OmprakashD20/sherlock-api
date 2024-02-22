@@ -66,7 +66,10 @@ export const getRound2Question = async (
     //check if the question number is valid
     if (round2Data[parseInt(qn) - 1]) {
       //start the timer if it is the first question
-      if (parseInt(qn) === 1 && !isRound2TimerStarted(res.locals.teamId))
+      if (
+        parseInt(qn) === 1 &&
+        !(await isRound2TimerStarted(res.locals.teamId))
+      )
         await startRound2Timer(res.locals.teamId);
 
       const question = round2Data[parseInt(qn) - 1].question;

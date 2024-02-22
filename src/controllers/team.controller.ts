@@ -101,7 +101,7 @@ export const getRound1Leaderboard = async (req: Request, res: Response) => {
       }
       return b.score.round1Score - a.score.round1Score;
     });
-    data = data.map((team) => {
+    let result = data.map((team, index) => {
       const sherlockTime = calculateTimeTaken(
         team.time.sherlockStartTime?.getTime(),
         team.time.sherlockEndTime?.getTime()
@@ -134,14 +134,13 @@ export const getRound1Leaderboard = async (req: Request, res: Response) => {
         }
       }
       return {
-        ...team,
-        time: {
-          ...team.time,
-          teamTime,
-        },
+        id: index + 1,
+        name: team.name,
+        teamScore: team.score.teamScore,
+        timeTaken: teamTime,
       };
     });
-    res.status(200).json(data);
+    res.status(200).json(result);
   } catch (err) {
     console.error(err);
     res.status(500).json({

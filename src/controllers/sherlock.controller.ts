@@ -27,7 +27,6 @@ import {
   updateSherlockScore,
   updateTeamScore,
 } from "@/services";
-import { parse } from "path";
 
 //sherlock round 1 controllers
 export const getSherlockRound1Question = async (
@@ -68,7 +67,10 @@ export const getSherlockRound1Question = async (
     //check if the question number is valid
     if (sherlockData[parseInt(qn) - 1]) {
       //start the timer if it is the first question
-      if (parseInt(qn) === 1 && !isSherlockTimerStarted(res.locals.teamId))
+      if (
+        parseInt(qn) === 1 &&
+        !(await isSherlockTimerStarted(res.locals.teamId))
+      )
         await startSherlockTimer(res.locals.teamId);
 
       const question = sherlockData[parseInt(qn) - 1];
