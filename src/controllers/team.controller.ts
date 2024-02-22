@@ -86,29 +86,57 @@ export const getRound1Leaderboard = async (req: Request, res: Response) => {
     let data: Team[] = await getLeaderboardDetails();
     data.sort((a, b) => {
       if (a.score.round1Score === b.score.round1Score) {
-        return (
-          Math.max(
-            a.time.sherlockEndTime.getTime() -
-              a.time.sherlockStartTime.getTime(),
-            a.time.watsonEndTime.getTime() - a.time.watsonStartTime.getTime()
-          ) -
-          Math.max(
-            b.time.sherlockEndTime.getTime() -
-              b.time.sherlockStartTime.getTime(),
-            b.time.watsonEndTime.getTime() - b.time.watsonStartTime.getTime()
-          )
-        );
+        //if a team hasn't started the round yet, then their time will be null
+        if (
+          a.time.sherlockStartTime &&
+          a.time.sherlockEndTime &&
+          a.time.watsonStartTime &&
+          a.time.watsonEndTime &&
+          b.time.sherlockStartTime &&
+          b.time.sherlockEndTime &&
+          b.time.watsonStartTime &&
+          b.time.watsonEndTime
+        )
+          return (
+            Math.max(
+              a.time.sherlockEndTime.getTime() -
+                a.time.sherlockStartTime.getTime(),
+              a.time.watsonEndTime.getTime() - a.time.watsonStartTime.getTime()
+            ) -
+            Math.max(
+              b.time.sherlockEndTime.getTime() -
+                b.time.sherlockStartTime.getTime(),
+              b.time.watsonEndTime.getTime() - b.time.watsonStartTime.getTime()
+            )
+          );
+        return 0;
       }
       return b.score.round1Score - a.score.round1Score;
     });
     let result = data.map((team, index) => {
+      if (
+        !team.time.sherlockStartTime ||
+        !team.time.sherlockEndTime ||
+        !team.time.watsonStartTime ||
+        !team.time.watsonEndTime
+      )
+        return {
+          id: index + 1,
+          name: team.name,
+          teamScore: team.score.teamScore,
+          timeTaken: {
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+          },
+        };
       const sherlockTime = calculateTimeTaken(
-        team.time.sherlockStartTime?.getTime(),
-        team.time.sherlockEndTime?.getTime()
+        team.time.sherlockStartTime.getTime(),
+        team.time.sherlockEndTime.getTime()
       );
       const watsonTime = calculateTimeTaken(
-        team.time.watsonStartTime?.getTime(),
-        team.time.watsonEndTime?.getTime()
+        team.time.watsonStartTime.getTime(),
+        team.time.watsonEndTime.getTime()
       );
       let teamTime: {
         hours: number;
