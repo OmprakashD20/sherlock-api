@@ -71,7 +71,7 @@ export const sherlockData: Question[] = [
   },
   {
     question:
-      "Once Sherlock and Watson meet they discuss on their findings and find out that Watson has uncovered a clue that Sherlock had fail to notice and find out it is the latitude and longitude leading to a location. They find the location empty with the following left behind by the mastermind behind the plot. Find him. Answer his full name all in caps.",
+      "Once Sherlock and Watson meet they discuss on their findings and find out that Watson has uncovered a clue that Sherlock had fail to notice and find out it is the latitude and longitude leading to a location. They find the location empty with the following left behind by the mastermind behind the plot. Find him. Answer his full name.",
     asset: ["19.png"],
     answer: "James Moriarty",
     clue: "He is a Professor and a Math Genius.",
