@@ -25,8 +25,6 @@ import {
   updateTeamScore,
 } from "@/services";
 
-//todo: add round 2 questions
-
 //round 2 controllers
 export const getRound2Question = async (
   req: Request<QnSchemaType, {}, {}>,
@@ -72,7 +70,7 @@ export const getRound2Question = async (
       )
         await startRound2Timer(res.locals.teamId);
 
-      const question = round2Data[parseInt(qn) - 1].question;
+      const question = round2Data[parseInt(qn) - 1];
 
       const attemptsRemaining = await getRound2RemainingAttempts(
         res.locals.teamId,
@@ -80,8 +78,9 @@ export const getRound2Question = async (
       );
 
       return res.status(200).json({
-        question,
+        question: question.question,
         attemptsRemaining,
+        assets: question.asset,
       });
     }
 
