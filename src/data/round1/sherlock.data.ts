@@ -18,7 +18,7 @@ export const sherlockData: Question[] = [
       "Knowing that his life is targeted with Irene as the bait, Sherlock decides to do something about it. He entrusts Enola Holmes to find a solution to it, and she finds one. But being a child, she is being playful and asks for Sherlock to solve a puzzle. Find 'ABCDEFGHIJ'.",
     asset: ["2.png"],
     answer: "2653135165",
-    clue: "SUDOKU",
+    clue: " Solve the riddle both vertically and Horizontally for the answer",
   },
   {
     question:

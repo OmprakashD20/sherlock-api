@@ -43,6 +43,13 @@ export const getWatsonRound1Question = async (
 
     //check if he/she is requesting the question in correct sequence
     const currentQn = (await getWatsonCurrentQuestion(res.locals.teamId)) + 1;
+
+    if (currentQn - 1 === watsonData.length) {
+      return res.status(200).json({
+        message: "Your timely help for Sherlock has saved the day!!",
+      });
+    }
+
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
         error:
@@ -50,6 +57,12 @@ export const getWatsonRound1Question = async (
             ? "You have already attempted this question!!"
             : "You can only attempt questions in sequence!!",
       });
+
+    if (currentQn - 1 === watsonData.length) {
+      return res.status(200).json({
+        message: "Sherlock & Watson solved yet another mystery once again!",
+      });
+    }
 
     //check if the question number is valid
     if (watsonData[parseInt(qn) - 1]) {
@@ -272,7 +285,7 @@ export const submitWatsonRound1Answer = async (
       //check if this is the last question
       const isGameOver = parseInt(qn) === watsonData.length;
 
-      if (isPenultimateQn) {
+      if (isPenultimateQn && attemptsRemaining - 1 === 0) {
         await setWatsonStatus(res.locals.teamId);
 
         //end the timer

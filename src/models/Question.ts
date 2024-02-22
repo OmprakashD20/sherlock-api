@@ -38,7 +38,8 @@ export class Question extends Base {
     super();
     for (let i = 1; i <= 10; i++) {
       this.sherlockAttempts[`qn${i}`] = 3;
-      this.watsonAttempts[`qn${i}`] = 3;
+      if (i !== 10) this.watsonAttempts[`qn${i}`] = 3;
+      else this.watsonAttempts[`qn${i}`] = 1;
       this.round2Attempts[`qn${i}`] = 3;
     }
   }
