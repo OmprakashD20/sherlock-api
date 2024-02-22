@@ -53,7 +53,7 @@ export const watsonData: Question[] = [
     question:
       "From the clue in the document that he meet the Inspector, Watson visits Inspector Lestarde at the police station who informs him that before Sherlock's supposed death, Sherlock had visited him for obtaining certain case files and that while he had been searching Sherlock had scribbled something onto his table.",
     asset: ["16A.png", "16B.png"],
-    answer: "MEET SISTER HOLMES",
+    answer: "MEET SISTER HOLMES.",
     clue: "Use Morse Code to find the answer.",
   },
   {
@@ -71,7 +71,7 @@ export const watsonData: Question[] = [
   },
   {
     question:
-      "Once Sherlock and Watson meet they discuss on their findings and find out that Watson has uncovered a clue that Sherlock had fail to notice and find out it is the latitude and longitude leading to a location. They find the location empty with the following left behind by the mastermind behind the plot. Find him. Answer his full name all in caps.",
+      "Once Sherlock and Watson meet they discuss on their findings and find out that Watson has uncovered a clue that Sherlock had fail to notice and find out it is the latitude and longitude leading to a location. They find the location empty with the following left behind by the mastermind behind the plot. Find him. Answer his full name.",
     asset: ["19.png"],
     answer: "James Moriarty",
     clue: "He is a Professor and a Math Genius.",

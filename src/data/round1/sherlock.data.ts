@@ -67,7 +67,7 @@ export const sherlockData: Question[] = [
       "Sherlock finds three files that has been Encrypted and has to Decrypt them.",
     asset: ["9A.png", "9B.png"],
     answer: "ALL READY",
-    clue: "The 2 linear words marked in the crossword.",
+    clue: "The 2 word linear words marked in the crossword.",
   },
   {
     question:
