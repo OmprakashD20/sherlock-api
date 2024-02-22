@@ -315,6 +315,7 @@ export const submitWatsonRound1Answer = async (
           error: "Wrong Answer!!",
           remark: "Better luck next time!!",
           gameover: isGameOver,
+          attemptsRemaining: attemptsRemaining - 1,
           time: {
             time: `You have taken ${hours} hours, ${minutes} minutes, ${seconds} seconds to complete round 1 of the game`,
             hours,
@@ -328,6 +329,7 @@ export const submitWatsonRound1Answer = async (
         error: "Wrong Answer!!",
         remark: "Better luck next time!!",
         attemptsRemaining: attemptsRemaining - 1,
+        gameover: isGameOver,
       });
     }
   } catch (err) {
