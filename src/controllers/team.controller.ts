@@ -9,6 +9,9 @@ import {
   getWatsonCurrentQuestion,
 } from "@/services";
 
+//utils
+import { calculateTimeTaken } from "@/utils";
+
 //models
 import { Team } from "@/models";
 import { CharacterSchemaType } from "@/validators";
@@ -98,7 +101,46 @@ export const getRound1Leaderboard = async (req: Request, res: Response) => {
       }
       return b.score.round1Score - a.score.round1Score;
     });
-
+    data = data.map((team) => {
+      const sherlockTime = calculateTimeTaken(
+        team.time.sherlockStartTime?.getTime(),
+        team.time.sherlockEndTime?.getTime()
+      );
+      const watsonTime = calculateTimeTaken(
+        team.time.watsonStartTime?.getTime(),
+        team.time.watsonEndTime?.getTime()
+      );
+      let teamTime: {
+        hours: number;
+        minutes: number;
+        seconds: number;
+      };
+      if (sherlockTime.hours > watsonTime.hours) {
+        teamTime = sherlockTime;
+      } else if (sherlockTime.hours < watsonTime.hours) {
+        teamTime = watsonTime;
+      } else if (sherlockTime.hours === watsonTime.hours) {
+        if (sherlockTime.minutes > watsonTime.minutes) {
+          teamTime = sherlockTime;
+        } else if (sherlockTime.minutes < watsonTime.minutes) {
+          teamTime = watsonTime;
+        }
+        if (sherlockTime.minutes === watsonTime.minutes) {
+          if (sherlockTime.seconds > watsonTime.seconds) {
+            teamTime = sherlockTime;
+          } else {
+            teamTime = watsonTime;
+          }
+        }
+      }
+      return {
+        ...team,
+        time: {
+          ...team.time,
+          teamTime,
+        },
+      };
+    });
     res.status(200).json(data);
   } catch (err) {
     console.error(err);
