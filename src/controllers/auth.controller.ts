@@ -114,7 +114,9 @@ export const signInController = async (
       currentQn = await getWatsonCurrentQuestion(team.id);
 
     res.status(200).json({
-      message: "Login successful!!",
+      message: `Good luck on your case, ${character[0].toUpperCase()}${character.slice(
+        1
+      )}!!`,
       token,
       name: team.name,
       character,
