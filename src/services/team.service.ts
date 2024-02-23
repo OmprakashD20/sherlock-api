@@ -106,3 +106,11 @@ export const getCharacter = async (kid: string, teamId: string) => {
       isWatson: true,
     };
 };
+
+export const checkIfUserExists = async (kid: string) => {
+  const team = await teamRepository
+    .createQueryBuilder("team")
+    .where("team.sherlock = :kid OR team.watson = :kid", { kid })
+    .getCount();
+  return team ? true : false;
+};

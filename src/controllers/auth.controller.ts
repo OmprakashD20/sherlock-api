@@ -6,6 +6,7 @@ import { SignInSchemaType, SignUpSchemaType } from "@/validators";
 
 //services
 import {
+  checkIfUserExists,
   createNewTeam,
   findTeamByName,
   getSherlockCurrentQuestion,
@@ -22,9 +23,19 @@ export const signUpController = async (
       req.body;
 
     //check if team already exists
-    if (await findTeamByName(name))
+    if (await findTeamByName(name.toLowerCase()))
       return res.status(400).json({
-        error: "Team already exists!!",
+        error: "Team with this name is already investigating the case!!",
+      });
+
+    if (await checkIfUserExists(sherlock))
+      return res.status(400).json({
+        error: "Sherlock, you are already investigating the case!!",
+      });
+
+    if (await checkIfUserExists(watson))
+      return res.status(400).json({
+        error: "Watson, you are already investigating the case!!",
       });
 
     //hash password
@@ -32,7 +43,7 @@ export const signUpController = async (
 
     //create new team
     const newTeam = await createNewTeam({
-      name,
+      name: name.toLowerCase(),
       password: hashedPassword,
       sherlock,
       watson,
@@ -45,7 +56,7 @@ export const signUpController = async (
         error: "Internal Server Error!!",
       });
     res.status(201).json({
-      message: "Team created successfully!!",
+      message: "Start investigating the case!!",
     });
   } catch (err) {
     console.error(err);
@@ -67,7 +78,7 @@ export const signInController = async (
 
     if (!team)
       return res.status(404).json({
-        error: "Team not found!!",
+        error: "You are not investigating the case!!",
       });
 
     //verify password
