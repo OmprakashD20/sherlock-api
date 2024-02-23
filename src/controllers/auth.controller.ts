@@ -74,7 +74,7 @@ export const signInController = async (
     const { name, email, password, kid, character } = req.body;
 
     //check if team exists
-    const team = await findTeamByName(name);
+    const team = await findTeamByName(name.toLowerCase());
 
     if (!team)
       return res.status(404).json({
