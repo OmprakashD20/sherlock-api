@@ -142,7 +142,8 @@ export const getWatsonRound1Clue = async (
     //check if the clue has already been used
     if (parseInt(qn) === lastClueUsedByWatson)
       return res.status(410).json({
-        error: "Clue has already been used for this question!!",
+        error:
+          "Use your brain!!. Why do you need a clue for the same question again!!",
       });
 
     //get the clue
@@ -157,8 +158,8 @@ export const getWatsonRound1Clue = async (
     return res.status(200).json({
       question: data.question,
       clue: data.clue,
-      message: "Your clue has been revealed!!",
-      remark: "Your score has been deducted by 5 points!!",
+      message:
+        "Use your clue wisely!!. Your score has been deducted by 5 points!!",
     });
   } catch (err) {
     console.error(err);

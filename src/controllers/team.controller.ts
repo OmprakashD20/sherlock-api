@@ -6,6 +6,7 @@ import {
   getLeaderboardDetails,
   getScoresByTeamId,
   getSherlockCurrentQuestion,
+  getTimingDetailsByTeamId,
   getWatsonCurrentQuestion,
 } from "@/services";
 
@@ -62,6 +63,44 @@ export const getTeamDetails = async (req: Request, res: Response) => {
 
     const scores = await getScoresByTeamId(res.locals.teamId);
 
+    let sherlockTiming: {
+        hours: number;
+        minutes: number;
+        seconds: number;
+      },
+      watsonTiming: {
+        hours: number;
+        minutes: number;
+        seconds: number;
+      };
+
+    const timings = await getTimingDetailsByTeamId(res.locals.teamId);
+    if (
+      !timings.sherlockStartTime ||
+      !timings.sherlockEndTime ||
+      !timings.watsonStartTime ||
+      !timings.watsonEndTime
+    ) {
+      sherlockTiming = {
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      };
+      watsonTiming = {
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      };
+    } else {
+      sherlockTiming = calculateTimeTaken(
+        timings.sherlockStartTime.getTime(),
+        timings.sherlockEndTime.getTime()
+      );
+      watsonTiming = calculateTimeTaken(
+        timings.watsonStartTime.getTime(),
+        timings.watsonEndTime.getTime()
+      );
+    }
     res.status(200).json({
       name: team.name,
       sherlock: team.sherlock,
@@ -72,6 +111,8 @@ export const getTeamDetails = async (req: Request, res: Response) => {
       round1Score: scores.round1Score,
       round2Score: scores.round2Score,
       teamScore: scores.teamScore,
+      sherlockTiming,
+      watsonTiming,
     });
   } catch (err) {
     console.error(err);

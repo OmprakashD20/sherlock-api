@@ -120,3 +120,10 @@ export const getRound2Timing = async (teamId: string) => {
     round2EndTime: timings.round2EndTime,
   };
 };
+
+export const getTimingDetailsByTeamId = async (teamId: string) => {
+  return timeRepository
+    .createQueryBuilder("time")
+    .where("time.teamId = :teamId", { teamId })
+    .getOne();
+};
