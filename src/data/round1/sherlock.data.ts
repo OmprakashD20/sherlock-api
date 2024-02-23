@@ -29,7 +29,7 @@ export const sherlockData: Question[] = [
   },
   {
     question:
-      "The Phone's messenger provides a photo which reveals a blackmail order intercepted by a Hacker helping Irene but not fully decrypted. Decrypt the data.",
+      "The Phone's messenger provides a photo that reveals a blackmail order intercepted by a Hacker helping Irene but not fully decrypted. Decrypt the data.",
     asset: ["4.png"],
     answer: "BOTULINUM TOXIN",
     clue: "Poison that blocks the release of Acetylcholine.",
