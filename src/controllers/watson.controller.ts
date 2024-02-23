@@ -38,7 +38,7 @@ export const getWatsonRound1Question = async (
     //check if the game is over
     if (parseInt(qn) > watsonData.length)
       return res.status(409).json({
-        error: "No more questions, Game Over!!",
+        error: "No more cases, Relax!!",
       });
 
     //check if he/she is requesting the question in correct sequence
@@ -54,15 +54,9 @@ export const getWatsonRound1Question = async (
       return res.status(403).json({
         error:
           currentQn > parseInt(qn)
-            ? "You have already attempted this question!!"
-            : "You can only attempt questions in sequence!!",
+            ? "You have already attempted this case!!"
+            : "You can only attempt cases in sequence!!",
       });
-
-    if (currentQn - 1 === watsonData.length) {
-      return res.status(200).json({
-        message: "Sherlock & Watson solved yet another mystery once again!",
-      });
-    }
 
     //check if the question number is valid
     if (watsonData[parseInt(qn) - 1]) {
@@ -88,7 +82,7 @@ export const getWatsonRound1Question = async (
     }
 
     return res.status(404).json({
-      error: "Question not found!!",
+      error: "Case not found!!",
     });
   } catch (err) {
     console.error(err);
@@ -114,24 +108,24 @@ export const getWatsonRound1Clue = async (
     if (attemptsRemaining === 0)
       return res.status(403).json({
         error:
-          "You have exceeded the maximum number of attempts for this question!!",
+          "You have exceeded the maximum number of attempts for this case!!",
       });
 
     //check if the game is over
     if (parseInt(qn) > watsonData.length)
       return res.status(409).json({
-        error: "No more questions, Game Over!!",
+        error: "No more cases, Relax!!",
       });
 
     //check if the question number is valid
     if (!watsonData[parseInt(qn) - 1])
-      return res.status(404).json({ error: "Question not found!!" });
+      return res.status(404).json({ error: "Case not found!!" });
 
     //check if he/she is requesting the clue for the current question
     const currentQn = (await getWatsonCurrentQuestion(res.locals.teamId)) + 1;
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
-        error: "You can only request clue for the current question!!",
+        error: "You can only request clue for the current case!!",
       });
 
     //get the last clue used by watson
@@ -143,7 +137,7 @@ export const getWatsonRound1Clue = async (
     if (parseInt(qn) === lastClueUsedByWatson)
       return res.status(410).json({
         error:
-          "Use your brain!!. Why do you need a clue for the same question again!!",
+          "Use your brain!!. Why do you need a clue for the same case again!!",
       });
 
     //get the clue
@@ -186,13 +180,13 @@ export const submitWatsonRound1Answer = async (
     if (attemptsRemaining === 0)
       return res.status(403).json({
         error:
-          "You have exceeded the maximum number of attempts for this question!!",
+          "You have exceeded the maximum number of attempts for this case!!",
       });
 
     //check if the game is over
     if (parseInt(qn) > watsonData.length)
       return res.status(409).json({
-        error: "No more questions, Game Over!!",
+        error: "No more cases, Relax!!",
       });
 
     //check if he/she is posting the answer for his/her current question
@@ -201,14 +195,14 @@ export const submitWatsonRound1Answer = async (
       return res.status(403).json({
         error:
           currentQn > parseInt(qn)
-            ? "You have already answered this question!!"
-            : "You can only answer the questions in sequence!!",
+            ? "You have already answered this case!!"
+            : "You can only answer the cases in sequence!!",
       });
 
     //check if the question exists
     if (!watsonData[parseInt(qn) - 1])
       return res.status(404).json({
-        error: "Question not found!!",
+        error: "Case not found!!",
       });
 
     //check if the answer is correct
@@ -249,7 +243,7 @@ export const submitWatsonRound1Answer = async (
         await updateRound1ScoreByWatson(res.locals.teamId);
 
         return res.status(200).json({
-          message: "Correct Answer!!",
+          message: "You have cracked the case!!",
           remark: "Your score has been incremented by 10 points!!",
           gameover: isGameOver,
           time: {
@@ -262,7 +256,7 @@ export const submitWatsonRound1Answer = async (
       }
 
       return res.status(200).json({
-        message: "Correct Answer!!",
+        message: "You have cracked the case!!",
         remark: "Your score has been incremented by 10 points!!",
         gameOver: isGameOver,
         isPenultimateQn,

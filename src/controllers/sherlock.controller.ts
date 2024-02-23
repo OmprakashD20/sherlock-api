@@ -45,13 +45,13 @@ export const getSherlockRound1Question = async (
     if (attemptsRemaining === 0)
       return res.status(403).json({
         error:
-          "You have exceeded the maximum number of attempts for this question!!",
+          "You have exceeded the maximum number of attempts for this case!!",
       });
 
     //check if the game is over
     if (parseInt(qn) > sherlockData.length)
       return res.status(409).json({
-        error: "No more questions, Game Over!!",
+        error: "No more cases, Game Over!!",
       });
 
     //check if he/she is requesting the question in correct sequence
@@ -60,8 +60,8 @@ export const getSherlockRound1Question = async (
       return res.status(403).json({
         error:
           currentQn > parseInt(qn)
-            ? "You have already attempted this question!!"
-            : "You can only attempt questions in sequence!!",
+            ? "You have already attempted this case!!"
+            : "You can only attempt cases in sequence!!",
       });
 
     //check if the question number is valid
@@ -88,7 +88,7 @@ export const getSherlockRound1Question = async (
     }
 
     return res.status(404).json({
-      error: "Question not found!!",
+      error: "Case not found!!",
     });
   } catch (err) {
     console.error(err);
@@ -114,24 +114,24 @@ export const getSherlockRound1Clue = async (
     if (attemptsRemaining === 0)
       return res.status(403).json({
         error:
-          "You have exceeded the maximum number of attempts for this question!!",
+          "You have exceeded the maximum number of attempts for this case!!",
       });
 
     //check if the game is over
     if (parseInt(qn) > sherlockData.length)
       return res.status(409).json({
-        error: "No more questions, Game Over!!",
+        error: "No more cases, Game Over!!",
       });
 
     //check if the question number is valid
     if (!sherlockData[parseInt(qn) - 1])
-      return res.status(404).json({ error: "Question not found!!" });
+      return res.status(404).json({ error: "Case not found!!" });
 
     //check if he/she is requesting the clue for the current question
     const currentQn = (await getSherlockCurrentQuestion(res.locals.teamId)) + 1;
     if (currentQn !== parseInt(qn))
       return res.status(403).json({
-        error: "You can only request clue for the current question!!",
+        error: "You can only request clue for the current case!!",
       });
 
     //get the last clue used by sherlock
@@ -143,7 +143,7 @@ export const getSherlockRound1Clue = async (
     if (parseInt(qn) === lastClueUsedBySherlock)
       return res.status(410).json({
         error:
-          "Use your brain!!. Why do you need a clue for the same question again!!",
+          "Use your brain!!. Why do you need a clue for the same case again!!",
       });
 
     //get the clue
@@ -186,13 +186,13 @@ export const submitSherlockRound1Answer = async (
     if (attemptsRemaining === 0)
       return res.status(403).json({
         error:
-          "You have exceeded the maximum number of attempts for this question!!",
+          "You have exceeded the maximum number of attempts for this case!!",
       });
 
     //check if the game is over
     if (parseInt(qn) > sherlockData.length)
       return res.status(409).json({
-        error: "No more questions, Game Over!!",
+        error: "No more cases, Relax!!",
       });
 
     //check if he/she is posting the answer for his/her current question
@@ -201,14 +201,14 @@ export const submitSherlockRound1Answer = async (
       return res.status(403).json({
         error:
           currentQn > parseInt(qn)
-            ? "You have already answered this question!!"
-            : "You can only answer the questions in sequence!!",
+            ? "You have already answered this case!!"
+            : "You can only answer the cases in sequence!!",
       });
 
     //check if the question exists
     if (!sherlockData[parseInt(qn) - 1])
       return res.status(404).json({
-        error: "Question not found!!",
+        error: "Case not found!!",
       });
 
     //check if the answer is correct
@@ -255,7 +255,7 @@ export const submitSherlockRound1Answer = async (
         await updateTeamScore(res.locals.teamId);
 
         return res.status(200).json({
-          message: "Correct Answer!!",
+          message: "You have cracked the case!!",
           remark: "Your score has been incremented by 10 points!!",
           gameover: isGameOver,
           time: {
@@ -267,7 +267,7 @@ export const submitSherlockRound1Answer = async (
         });
       }
       return res.status(200).json({
-        message: "Correct Answer!!",
+        message: "You have cracked the case!!",
         remark: "Your score has been incremented by 10 points!!",
         gameover: isGameOver,
         isPenultimateQn,
