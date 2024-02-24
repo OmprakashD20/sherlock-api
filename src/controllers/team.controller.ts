@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import {
   findTeamById,
   getLeaderboardDetails,
+  getRound2CurrentQuestion,
   getScoresByTeamId,
   getSherlockCurrentQuestion,
   getTimingDetailsByTeamId,
@@ -24,6 +25,7 @@ export const getCharacterDetails = async (
   try {
     const { character } = req.query;
     const team = await findTeamById(res.locals.teamId);
+    const round2CurrentQn = await getRound2CurrentQuestion(res.locals.teamId);
     if (character === "sherlock") {
       const currentQn = await getSherlockCurrentQuestion(res.locals.teamId);
       return res.status(200).json({
@@ -32,6 +34,8 @@ export const getCharacterDetails = async (
         sherlock: team.sherlock,
         watson: team.watson,
         currentQn: currentQn + 1,
+        round1Cleared: team.round1Cleared,
+        round2CurrentQn: round2CurrentQn + 1,
       });
     }
     if (character === "watson") {
@@ -42,6 +46,8 @@ export const getCharacterDetails = async (
         sherlock: team.sherlock,
         watson: team.watson,
         currentQn: currentQn + 1,
+        round1Cleared: team.round1Cleared,
+        round2CurrentQn: round2CurrentQn + 1,
       });
     }
   } catch (err) {
@@ -166,7 +172,10 @@ export const getRound1Leaderboard = async (req: Request, res: Response) => {
         return {
           id: index + 1,
           name: team.name,
-          teamScore: team.score.teamScore,
+          teamScore:
+            team.score.teamScore === 0
+              ? team.score.sherlockScore + team.score.watsonScore
+              : team.score.teamScore,
           timeTaken: {
             hours: 0,
             minutes: 0,
@@ -224,20 +233,62 @@ export const getRound1Leaderboard = async (req: Request, res: Response) => {
   }
 };
 
-//todo: add time taken for round 2
 export const getRound2Leaderboard = async (req: Request, res: Response) => {
   try {
     let data: Team[] = await getLeaderboardDetails();
+    data = data.filter((team) => team.round1Cleared);
     data.sort((a, b) => {
-      if (a.score.round2Score === b.score.round2Score) {
-        return (
-          a.time.round2EndTime.getTime() - a.time.round2StartTime.getTime()
-        );
+      if (a.score.round1Score === b.score.round1Score) {
+        //if a team hasn't started the round yet, then their time will be null
+        if (
+          a.time.round2StartTime &&
+          a.time.round2EndTime &&
+          b.time.round2StartTime &&
+          b.time.round2EndTime
+        )
+          return (
+            a.time.round2EndTime.getTime() -
+            a.time.round2StartTime.getTime() -
+            (b.time.round2EndTime.getTime() - b.time.round2StartTime.getTime())
+          );
+        return 0;
       }
-      return b.score.round2Score - a.score.round2Score;
+      return b.score.round1Score - a.score.round1Score;
     });
-
-    res.status(200).json(data);
+    const position = data.findIndex((team) => team.id === res.locals.teamId);
+    const totalTeams = data.length;
+    let result = data.map((team, index) => {
+      if (!team.time.round2StartTime || !team.time.round2EndTime)
+        return {
+          id: index + 1,
+          name: team.name,
+          teamScore: team.score.teamScore,
+          timeTaken: {
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+          },
+        };
+      let teamTime: {
+        hours: number;
+        minutes: number;
+        seconds: number;
+      } = calculateTimeTaken(
+        team.time.round2StartTime.getTime(),
+        team.time.round2EndTime.getTime()
+      );
+      return {
+        id: index + 1,
+        name: team.name,
+        teamScore: team.score.teamScore,
+        timeTaken: teamTime,
+      };
+    });
+    res.status(200).json({
+      position: position + 1,
+      totalTeams,
+      data: result,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({

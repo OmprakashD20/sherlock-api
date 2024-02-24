@@ -28,8 +28,7 @@ export const getRound1Status = async (teamId: string) => {
 };
 
 export const getRound2Status = async (teamId: string) => {
-  const team = await findTeamById(teamId);
-  return team.character;
+  return (await findTeamById(teamId)).character;
 };
 
 export const setRound2Status = async (

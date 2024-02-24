@@ -134,6 +134,7 @@ export const signInController = async (
       email,
       kid,
       currentQn: currentQn + 1,
+      round1Cleared: team.round1Cleared,
     });
   } catch (err) {
     console.error(err);
