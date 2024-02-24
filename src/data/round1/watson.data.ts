@@ -64,7 +64,7 @@ export const watsonData: Question[] = [
     clue: "Top left --> Right --> Down --> Left --> Continue in Snake and Ladder Method.",
   },
   {
-    question: "In Audio:",
+    question: "Once Watson had solved the puzzle Enola had given, she provides him with the next clue, which is in the form of an audio file. \nIn Audio:",
     asset: ["18.mp3"],
     answer: "HOME",
     clue: "Where do you live? 4 Letter words.",

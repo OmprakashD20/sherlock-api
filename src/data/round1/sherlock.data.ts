@@ -10,7 +10,7 @@ export const sherlockData: Question[] = [
     question:
       "Sherlock is visiting Irene at the Hospital after the fateful accident. Irene is in recovery and safe, but is acting weird for some reason, which Sherlock has been noticing. Irene secretly slides a chit into Sherlock's hand.",
     asset: ["1.png"],
-    answer: "Someone wants you dead",
+    answer: "Some one wants you dead",
     clue: "The answer is hidden across words similar to the joke made in Nanban.",
   },
   {
@@ -22,7 +22,7 @@ export const sherlockData: Question[] = [
   },
   {
     question:
-      "The next day Sherlock is visited by Irene at his house. IRENE: 'To me disguise was always a self-potrait. But this? This is more intimate. This is my heart!' (Faints on Sherlock's hand where Sherlock notices it's a ruse to pass her Phone to Sherlock with a note that reads 'Openit'.)",
+      "The next day Sherlock is visited by Irene at his house. IRENE: 'To me disguise was always a self-potrait. But this? This is more intimate. This is my heart!' (Faints on Sherlock's hand where Sherlock notices it's a ruse to pass her Phone to Sherlock with a note that reads 'Open it'.)",
     asset: ["3.png"],
     answer: "SHER",
     clue: "It's about you!",
