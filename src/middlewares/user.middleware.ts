@@ -9,6 +9,7 @@ import {
   isWatson,
   setRound2Status,
 } from "@/services";
+import { CharacterSchemaType } from "@/validators";
 
 export const verifySherlock = async (
   req: Request,
@@ -56,40 +57,35 @@ export const verifyWatson = async (
   }
 };
 
+//restrict the second user from logging in
 export const restrictSecondUser = async (
-  req: Request,
+  req: Request<any, any, any, CharacterSchemaType>,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const teamId = res.locals.teamId;
 
-    //fix: get the character of the user from the req params
-
-    //check if a user has already logged in
-    const { isSherlock, isWatson } = await getCharacter(res.locals.kid, teamId);
-
-    //restrict the second user from logging in
+    const { character: player } = req.query;
 
     const character = await getRound2Status(teamId);
 
     if (!character) {
-      const userCharacter = isSherlock ? "sherlock" : "watson";
-      await setRound2Status(teamId, userCharacter);
+      await setRound2Status(teamId, player);
       next();
     }
 
-    if (isSherlock) {
+    if (player === "sherlock" && character === "watson") {
       const isLoggedIn = await getLogInStatus(teamId);
-      if (isLoggedIn && character !== "sherlock")
+      if (isLoggedIn)
         return res.status(409).json({
           error: "Oops! Looks like Watson is already in the game.",
         });
     }
 
-    if (isWatson) {
+    if (player === "watson" && character === "sherlock") {
       const isLoggedIn = await getLogInStatus(teamId);
-      if (isLoggedIn && character !== "watson")
+      if (isLoggedIn)
         return res.status(409).json({
           error: "Oops! Looks like Sherlock is already in the game.",
         });

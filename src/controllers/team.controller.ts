@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import {
   findTeamById,
   getLeaderboardDetails,
+  getRound2CurrentQuestion,
   getScoresByTeamId,
   getSherlockCurrentQuestion,
   getTimingDetailsByTeamId,
@@ -24,6 +25,7 @@ export const getCharacterDetails = async (
   try {
     const { character } = req.query;
     const team = await findTeamById(res.locals.teamId);
+    const round2CurrentQn = await getRound2CurrentQuestion(res.locals.teamId);
     if (character === "sherlock") {
       const currentQn = await getSherlockCurrentQuestion(res.locals.teamId);
       return res.status(200).json({
@@ -32,6 +34,8 @@ export const getCharacterDetails = async (
         sherlock: team.sherlock,
         watson: team.watson,
         currentQn: currentQn + 1,
+        round1Cleared: team.round1Cleared,
+        round2CurrentQn: round2CurrentQn + 1,
       });
     }
     if (character === "watson") {
@@ -42,6 +46,8 @@ export const getCharacterDetails = async (
         sherlock: team.sherlock,
         watson: team.watson,
         currentQn: currentQn + 1,
+        round1Cleared: team.round1Cleared,
+        round2CurrentQn: round2CurrentQn + 1,
       });
     }
   } catch (err) {
