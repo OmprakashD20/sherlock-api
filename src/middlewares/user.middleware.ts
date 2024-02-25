@@ -70,7 +70,7 @@ export const restrictSecondUser = async (
 
     const character = await getRound2Status(teamId);
 
-    if (!character) {
+    if (!character || character === "null") {
       await setRound2Status(teamId, player);
       next();
     }
