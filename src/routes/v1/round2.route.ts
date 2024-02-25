@@ -4,6 +4,7 @@ import express from "express";
 import {
   getRound2Clue,
   getRound2Question,
+  removeLoggedInCharacter,
   submitRound2Answer,
 } from "@/controllers";
 
@@ -15,23 +16,45 @@ import {
 } from "@/middlewares";
 
 //validators
-import { AnswerSchema, QnSchema, validate } from "@/validators";
+import {
+  AnswerSchema,
+  CharacterSchema,
+  QnSchema,
+  validate,
+} from "@/validators";
 
 const round2Router = express.Router();
 
 round2Router.use(verifyToken);
 round2Router.use(checkRound1Cleared);
-round2Router.use(restrictSecondUser);
 
 // round 2
 
+//GET - remove already logged in character
+round2Router.get("/logout", removeLoggedInCharacter);
+
 //GET - get questions
-round2Router.get("/:qn", validate(QnSchema), getRound2Question);
+round2Router.get(
+  "/:qn",
+  restrictSecondUser,
+  validate(QnSchema),
+  getRound2Question
+);
 
 //GET - get clues
-round2Router.get("/:qn/clue", validate(QnSchema), getRound2Clue);
+round2Router.get(
+  "/:qn/clue",
+  restrictSecondUser,
+  validate(QnSchema),
+  getRound2Clue
+);
 
 //POST - submit answers
-round2Router.post("/:qn", validate(AnswerSchema), submitRound2Answer);
+round2Router.post(
+  "/:qn",
+  restrictSecondUser,
+  validate(AnswerSchema),
+  submitRound2Answer
+);
 
 export default round2Router;

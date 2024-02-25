@@ -9,17 +9,20 @@ import {
   AnswerSchemaBodyType,
   AnswerSchemaParamsType,
   QnSchemaType,
-} from "@/validators/team.validator";
+  CharacterSchemaType,
+} from "@/validators";
 import {
   endRound2Timer,
   getLastClueUsedInRound2,
   getRound2CurrentQuestion,
   getRound2RemainingAttempts,
+  getRound2Status,
   getRound2Timing,
   isRound2TimerStarted,
   setLastClueUsedInRound2,
   setRound2CurrentQuestion,
   setRound2RemainingAttempts,
+  setRound2Status,
   startRound2Timer,
   updateRound2Score,
   updateTeamScore,
@@ -278,6 +281,27 @@ export const submitRound2Answer = async (
         attemptsRemaining: attemptsRemaining - 1,
       });
     }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "Internal Server Error!!",
+    });
+  }
+};
+
+export const removeLoggedInCharacter = async (
+  req: Request<{}, {}, {}, CharacterSchemaType>,
+  res: Response
+) => {
+  try {
+    const { character: player } = req.query;
+    const character = await getRound2Status(res.locals.teamId);
+    if (character === player) await setRound2Status(res.locals.teamId, null);
+    res.status(200).json({
+      message: `Ask ${
+        character === "sherlock" ? "Watson" : "Sherlock"
+      } to continue the investigation!!`,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({
