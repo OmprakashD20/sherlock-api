@@ -30,6 +30,9 @@ round2Router.use(checkRound1Cleared);
 
 // round 2
 
+//GET - remove already logged in character
+round2Router.get("/logout", removeLoggedInCharacter);
+
 //GET - get questions
 round2Router.get(
   "/:qn",
@@ -52,13 +55,6 @@ round2Router.post(
   restrictSecondUser,
   validate(AnswerSchema),
   submitRound2Answer
-);
-
-//POST - remove already logged in character
-round2Router.post(
-  "/logout",
-  validate(CharacterSchema),
-  removeLoggedInCharacter
 );
 
 export default round2Router;
