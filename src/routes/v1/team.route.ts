@@ -14,7 +14,7 @@ const teamRouter = express.Router();
 
 teamRouter.use(verifyToken);
 
-//GET -get team details
+//GET - get team details
 teamRouter.get("/details", getTeamDetails);
 
 //GET - get character details
